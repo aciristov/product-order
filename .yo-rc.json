@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.myproject.productsorder"
+    },
+    "jhipsterVersion": "5.7.0",
+    "applicationType": "monolith",
+    "baseName": "ProductOrderApplication",
+    "packageName": "com.myproject.productsorder",
+    "packageFolder": "com/myproject/productsorder",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YTQ3NjljZmZkNjg3NTFkYzI2YzFjY2QwODdhZGNlYjE4MmI3OTBmMzQwMjljZGFkZDE5MWE4MTdmOTg4ZTAwZTQ1MTM2NmM4MGY4YjRlM2RkNjg3Y2FkYmFmYzgwNmViZWY1ZWIyZGRiZDIzZGRhOTlkNDYxNjM0YWIyMWFjMTU=",
+    "clientFramework": "react",
+    "useSass": false,
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [],
+    "enableTranslation": false
+  }
+}
