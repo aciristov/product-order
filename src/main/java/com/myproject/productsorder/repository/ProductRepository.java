@@ -18,5 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product save(Product product);
     List<Product> findAll();
     Optional<Product> findById(Long id);
+    void update(Long id, Product product);
+    void delete(Long id);
 
 }

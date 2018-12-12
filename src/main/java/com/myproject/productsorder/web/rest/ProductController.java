@@ -1,8 +1,10 @@
 package com.myproject.productsorder.web.rest;
 
+import com.myproject.productsorder.domain.Company;
 import com.myproject.productsorder.domain.Product;
 import com.myproject.productsorder.service.ProductService;
 
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import sun.rmi.runtime.Log;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -51,11 +54,31 @@ public class ProductController {
         return ResponseEntity.ok().body(product);
     }
 
-//    // UPDATE PRODUCT WITH ID
-//    @RequestMapping(value = "/updateproduct/{id}", method = RequestMethod.PUT)
-//    public ResponseEntity<?> updateProduct(@RequestBody Product product){
-//
-//    }
+    // UPDATE PRODUCT WITH ID
+    @RequestMapping(value = "/updateproduct/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Product product){
+        Product tempProduct = productService.getProduct(product.getId());
+        if (tempProduct == null){
+            logger.info("Product for UPDATE NOT found with id=" + id);
+        }
+        product.setId(id);
+        productService.update(id, product);
+        logger.info("Product has been UPDATED successfully with id: " + id);
+        return ResponseEntity.ok().body(product);
 
+    }
+
+    // DELETE PRODUCT
+    @RequestMapping(value = "/deteleproduct/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+        Product product = productService.getProduct(id);
+        if (product == null){
+            logger.info("Product for DELETE NOT found with id=" + id);
+        }
+        productService.delete(id);
+        logger.info("Book has been DELETED successfully ");
+        return ResponseEntity.ok().body(product);
+
+    }
 
 }

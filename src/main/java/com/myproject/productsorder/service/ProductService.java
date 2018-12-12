@@ -10,5 +10,7 @@ public interface ProductService  {
     Product save(Product product);
     List<Product> listAll();
     Product getProduct(Long id);
+    void update(Long id, Product product);
+    void delete(Long id);
 
 }
