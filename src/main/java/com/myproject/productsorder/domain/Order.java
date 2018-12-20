@@ -11,16 +11,12 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "quantity")
     private double quantity;
 
-    @Column(name = "orderDate")
     private Date orderDate;
 
-    @Column(name = "description")
     private String description;
 
 
@@ -51,6 +47,7 @@ public class Order {
 //    private Set<Product> products = new HashSet<>();
 
 
+    // ADD PRODUCT TO PRODUCTS FROM THE LIST ABOVE, FOR ORDER. -> ONE ORDER MANY PRODUCTS
     public void addProduct(Product product) {
         OrderProduct orderProduct = new OrderProduct(this, product);
         products.add(orderProduct);

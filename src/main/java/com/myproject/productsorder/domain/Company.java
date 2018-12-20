@@ -1,6 +1,8 @@
 package com.myproject.productsorder.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "companies")
@@ -8,19 +10,23 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Size(max = 150)
+    @Column(unique = true)
     private String name;
 
-    @Column(name = "city")
+    @NotNull
+    @Size(max = 100)
     private String city;
 
-    @Column(name = "phone")
+    @NotNull
+    @Size(max = 100)
     private String phone;
 
-    @Column(name = "address")
+    @NotNull
+    @Size(max = 200)
     private String address;
 
     // JUST DEFAULT CONSTRUCTOR

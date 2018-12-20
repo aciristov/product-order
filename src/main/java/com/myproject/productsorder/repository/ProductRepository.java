@@ -15,10 +15,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByCompanyId(Long companyId, Pageable pageable);
 
-    Product save(Product product);
-    List<Product> findAll();
-    Optional<Product> findById(Long id);
-    void update(Long id, Product product);
-    void delete(Long id);
+//    Product save(Product product);
+//    List<Product> findAll();
+//    Optional<Product> findById(Long id);
+//    void update(Long id, Product product);
+//    void delete(Long id);
 
 }

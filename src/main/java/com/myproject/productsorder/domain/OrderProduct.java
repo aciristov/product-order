@@ -19,7 +19,6 @@ public class OrderProduct {
     @MapsId("productid")
     private Product product;
 
-    @Column(name = "quantity")
     private double quantity;
 
     private OrderProduct(){}

@@ -1,12 +1,14 @@
 package com.myproject.productsorder.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,20 +20,19 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
 
-    @NaturalId
-    @Column(name = "name")
+    @NotNull
+    @Size(max = 150)
     private String name;
 
-    @Column(name = "unit_price")
-    private double unit_price;
+    @NotNull
+    private double unitprice;
 
-    @Column(name = "description")
+    @Size(max = 200)
     private String description;
 
-    @Column(name = "available")
+    @NotNull
     private boolean available;
 
 
@@ -41,9 +42,11 @@ public class Product {
 
     //ManyToOne, "Product" AND "Company"
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE.CASCADE)
-    @JsonIgnore
+    @JoinColumn(name = "company_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty("company_id")
     private Company company;
 
 
@@ -53,9 +56,9 @@ public class Product {
     }
 
     //CONSTRUCTOR WITH ARGUMENTS
-    public Product(String name, double unit_price, String description, boolean available){
+    public Product(String name, double unitprice, String description, boolean available){
         this.name = name;
-        this.unit_price = unit_price;
+        this.unitprice = unitprice;
         this.description = description;
         this.available = available;
     }
@@ -101,12 +104,20 @@ public class Product {
         this.name = name;
     }
 
-    public double getUnit_price() {
-        return unit_price;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setUnit_price(double unit_price) {
-        this.unit_price = unit_price;
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public double getUnitprice() {
+        return unitprice;
+    }
+
+    public void setUnitprice(double unitprice) {
+        this.unitprice = unitprice;
     }
 
     public String getDescription() {

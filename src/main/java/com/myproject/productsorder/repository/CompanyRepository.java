@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    Company save(Company company);
-    List<Company> findAll();
-    Optional<Company> findById(Long id);
+//    Company save(Company company);
+//    List<Company> findAll();
+//    Optional<Company> findById(Long id);
 }
