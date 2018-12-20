@@ -27,7 +27,7 @@ public class Order {
 
 
     // ONETOMANY BETWEEN "OrderProduct" and "Order"
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <OrderProduct> products = new ArrayList<>();
 
     //JUST DEFAULT CONSTRUCTOR

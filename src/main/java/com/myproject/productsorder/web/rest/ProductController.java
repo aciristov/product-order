@@ -80,13 +80,13 @@ public class ProductController {
         if (!companyRepository.existsById(companyId)){
             throw new ResourceNotFoundException("Companyid " + companyId + " not found");
         }
-        return productRepository.findById(productId).map(product -> {
-            product.setName(productRequest.getName());
-            product.setUnitprice(productRequest.getUnitprice());
-            product.setDescription(productRequest.getDescription());
-            product.setAvailable(productRequest.isAvailable());
-            return productRepository.save(product);
-        }).orElseThrow(()-> new ResourceNotFoundException("ProductId " + productId + " not found"));
+        //return productRepository.findById(productId).map(product -> {
+          //  product.setName(productRequest.getName());
+            //product.setUnitprice(productRequest.getUnitprice());
+            //product.setDescription(productRequest.getDescription());
+            //product.setAvailable(productRequest.isAvailable());
+            return productRepository.save(productRequest);
+       // }).orElseThrow(()-> new ResourceNotFoundException("ProductId " + productId + " not found"));
     }
 
 

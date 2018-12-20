@@ -53,13 +53,16 @@ public class CompanyController {
     //EDIT COMPANY BY ID
     @PutMapping("/companies/{id}")
     public Company updateCompany(@PathVariable Long companyId, @Valid @RequestBody Company companyRequest){
-        return companyRepository.findById(companyId).map(company -> {
-            company.setName(companyRequest.getName());
-            company.setCity(companyRequest.getCity());
-            company.setPhone(companyRequest.getPhone());
-            company.setAddress(companyRequest.getAddress());
-            return companyRepository.save(company);
-        }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not founc"));
+        if (!companyRepository.existsById(companyId)){
+            throw new ResourceNotFoundException("CompanyId " + companyId + " not exist");
+        }
+//        return companyRepository.findById(companyId).map(company -> {
+//            company.setName(companyRequest.getName());
+//            company.setCity(companyRequest.getCity());
+//            company.setPhone(companyRequest.getPhone());
+//            company.setAddress(companyRequest.getAddress());
+            return companyRepository.save(companyRequest);
+//        }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not founc"));
     }
 
     // GET COMPANY BY ID

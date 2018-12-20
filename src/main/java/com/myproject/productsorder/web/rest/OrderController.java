@@ -75,12 +75,12 @@ public class OrderController {
         if (!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
-        return orderRepository.findById(orderId).map(order -> {
-            order.setDescription(orderRequest.getDescription());
-            order.setQuantity(orderRequest.getQuantity());
-            order.setOrderDate(orderRequest.getOrderDate());
-            return orderRepository.save(order);
-        }).orElseThrow(()-> new ResourceNotFoundException("OrderId " + orderId + " not found"));
+//        return orderRepository.findById(orderId).map(order -> {
+//            order.setDescription(orderRequest.getDescription());
+//            order.setQuantity(orderRequest.getQuantity());
+//            order.setOrderDate(orderRequest.getOrderDate());
+            return orderRepository.save(orderRequest);
+//        }).orElseThrow(()-> new ResourceNotFoundException("OrderId " + orderId + " not found"));
 
     }
 
