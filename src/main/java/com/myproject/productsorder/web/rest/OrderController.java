@@ -68,7 +68,7 @@ public class OrderController {
 //    }
 
     // EDIT ORDER FOR USER
-    @PutMapping("/orders/{id}")
+    @PutMapping("/users/{userId}/orders/{orderId}")
     public Order updateOrder(@PathVariable (value = "userId") Long userId,
                              @PathVariable (value = "orderId") Long orderId,
                              @Valid @RequestBody Order orderRequest){
@@ -84,14 +84,29 @@ public class OrderController {
 
     }
 
+    //DETELE ORDER BY USER
+    @DeleteMapping("/users/{userId}/orders/{orderId}")
+    public ResponseEntity<?> deleteOrder(@PathVariable (value="userId")Long userId,
+                                         @PathVariable (value="orderId") Long orderId){
+        if (!userRepository.existsById(userId)){
+            throw new ResourceNotFoundException("UserId " + userId + " not found");
+        }
 
-    //DELETE ORDER BY ID
-    @DeleteMapping("/orders/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long orderId){
         return orderRepository.findById(orderId).map(order -> {
             orderRepository.delete(order);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("OrderId " + orderId + " not found"));
+        }).orElseThrow(()-> new ResourceNotFoundException("OrderId " + orderId + " not found"));
+
     }
+
+
+//    //DELETE ORDER BY ID
+//    @DeleteMapping("/orders/{id}")
+//    public ResponseEntity<?> deleteOrder(@PathVariable Long orderId){
+//        return orderRepository.findById(orderId).map(order -> {
+//            orderRepository.delete(order);
+//            return ResponseEntity.ok().build();
+//        }).orElseThrow(() -> new ResourceNotFoundException("OrderId " + orderId + " not found"));
+//    }
 
 }
