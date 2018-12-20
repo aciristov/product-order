@@ -92,7 +92,7 @@ public class ProductController {
 
 //    // UPDATE PRODUCT WITH ID
 //    @RequestMapping(value = "/updateproduct/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Product product){
+//    public ResponseEntity<?> update(@PathVariable("/updateproduct/id") Long id, @RequestBody Product product){
 //        Product tempProduct = productService.getProduct(product.getId());
 //        if (tempProduct == null){
 //            logger.info("Product for UPDATE NOT found with id=" + id);
@@ -106,6 +106,7 @@ public class ProductController {
 
 
     // DELETE PRODUCT FOR COMPANY_ID
+
     @DeleteMapping("/companies/{companyId}/products/{product_id}")
     public ResponseEntity<?> deleteProduct(@PathVariable (value = "companyId") Long companyId,
                                            @PathVariable (value = "productId") Long productId) {
