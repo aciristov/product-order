@@ -1,5 +1,11 @@
 package com.myproject.productsorder.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
@@ -28,6 +34,16 @@ public class Order {
     public Order(){
 
     }
+
+    //ONETOMANY "USER AND ORDER" , many orders for user
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty("user_id")
+    private User user;
+
 
     //CONSTRUCTOR WITH ARGUMENTS
     public Order(Date orderDate, int quantity, String description){
