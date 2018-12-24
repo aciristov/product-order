@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 // BETWEEN ORDER AND PRODUCT
-@Entity(name = "OrderProduct")
+@Entity
 @Table(name = "order_product")
 public class OrderProduct {
 
@@ -19,7 +19,15 @@ public class OrderProduct {
     @MapsId("productid")
     private Product product;
 
-    private double quantity;
+
+    // TODO: MAYBE IN OTHER CLASSES, CHECK!
+//    private double quantity;
+//
+//    private double unit_price;
+//
+//    public double totalPrice(){
+//        return quantity * unit_price;
+//    }
 
     private OrderProduct(){}
 
@@ -68,12 +76,12 @@ public class OrderProduct {
     public void setProduct(Product product) {
         this.product = product;
     }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
-    }
+//
+//    public double getQuantity() {
+//        return quantity;
+//    }
+//
+//    public void setQuantity(double quantity) {
+//        this.quantity = quantity;
+//    }
 }

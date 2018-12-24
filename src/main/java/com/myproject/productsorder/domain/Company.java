@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "companies")
+@Table(name = "company")
 public class Company {
 
     @Id
@@ -14,7 +14,7 @@ public class Company {
 
     @NotNull
     @Size(max = 150)
-    @Column(unique = true)
+    @Column(unique = true, name = "company_id")
     private String name;
 
     @NotNull

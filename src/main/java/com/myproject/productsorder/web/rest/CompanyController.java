@@ -3,6 +3,7 @@ package com.myproject.productsorder.web.rest;
 import com.myproject.productsorder.domain.Company;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.CompanyRepository;
+import com.myproject.productsorder.security.AuthoritiesConstants;
 import com.myproject.productsorder.service.CompanyService;
 import com.netflix.discovery.converters.Auto;
 import org.hibernate.annotations.GeneratorType;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/companyAPI")
+@Secured(AuthoritiesConstants.USER)
 public class CompanyController {
 
 //    @Autowired

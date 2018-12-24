@@ -1,5 +1,6 @@
 package com.myproject.productsorder.web.rest;
 
+import com.myproject.productsorder.domain.Company;
 import com.myproject.productsorder.domain.Order;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.OrderRepository;
@@ -7,6 +8,8 @@ import com.myproject.productsorder.repository.UserRepository;
 import com.myproject.productsorder.service.OrderService;
 import com.myproject.productsorder.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -17,7 +20,7 @@ import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
-@RequestMapping("/controllerAPI")
+@RequestMapping("/orderAPI")
 public class OrderController {
 
     @Autowired
@@ -42,18 +45,23 @@ public class OrderController {
 //    }
 
     // GET ALL ORDERS
+//    @GetMapping("/orders")
+//    public ResponseEntity<List<Order>> list() {
+//        List<Order> orders = orderService.listAll();
+//        return ResponseEntity.ok().body(orders);
+//    }
+
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> list() {
-        List<Order> orders = orderService.listAll();
-        return ResponseEntity.ok().body(orders);
+    public Page<Order> getAllOrders(Pageable pageable){
+        return orderRepository.findAll(pageable);
     }
 
-    // GET ORDER BY ID
-    @GetMapping("/orders/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable("id") Long id) {
-        Order order = orderService.getOrder(id);
-        return ResponseEntity.ok().body(order);
-    }
+//    // GET ORDER BY ID
+//    @GetMapping("/orders/{id}")
+//    public ResponseEntity<Order> getOrderById(@PathVariable("id") Long id) {
+//        Order order = orderService.getOrder(id);
+//        return ResponseEntity.ok().body(order);
+//    }
 
 
 //    // EDIT ORDER BY ID

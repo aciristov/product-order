@@ -9,10 +9,11 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.*;
 
-@Entity(name = "Order")
-@Table(name = "orders")
+@Entity
+@Table(name = "order")
 public class Order {
 
     @Id
@@ -23,6 +24,7 @@ public class Order {
 
     private Date orderDate;
 
+    @Size(max = 200)
     private String description;
 
 

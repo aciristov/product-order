@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "Product")
+@Entity
 @Table(name = "product")
 @NaturalIdCache
 public class Product {
