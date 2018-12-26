@@ -9,12 +9,13 @@ import javax.validation.constraints.Size;
 public class Company {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     @NotNull
     @Size(max = 150)
-    @Column(unique = true, name = "company_id")
+    @Column(unique = true)
     private String name;
 
     @NotNull

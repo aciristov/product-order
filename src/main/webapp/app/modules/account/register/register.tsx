@@ -35,6 +35,7 @@ export class RegisterPage extends React.Component<IRegisterProps, IRegisterState
   render() {
     return (
       <div>
+        <h1>Test</h1>
         <Row className="justify-content-center">
           <Col md="8">
             <h1 id="register-title">Registration</h1>
