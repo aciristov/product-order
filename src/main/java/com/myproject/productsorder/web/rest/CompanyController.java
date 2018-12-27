@@ -32,7 +32,8 @@ public class CompanyController {
     // SAVE NEW COMPANY
     @PostMapping("/companies")
     public Company createCompany(@Valid @RequestBody Company company){
-        return companyRepository.save(company);
+        Company newCompany = companyRepository.save(company);
+        return newCompany;
     }
 
 //    @RequestMapping(value = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,34 +56,48 @@ public class CompanyController {
 
     //EDIT COMPANY BY ID
     @PutMapping("/companies/{id}")
-    public Company updateCompany(@PathVariable Long companyId, @Valid @RequestBody Company companyRequest){
+    public Company updateCompany(@Valid @RequestBody Company companyRequest, @PathVariable(name = "id") Long companyId){
         if (!companyRepository.existsById(companyId)){
             throw new ResourceNotFoundException("CompanyId " + companyId + " not exist");
         }
+
+        return companyRepository.findById(companyId).map(company -> {
+            company.setName(companyRequest.getName());
+            company.setCity(companyRequest.getCity());
+            company.setPhone(companyRequest.getPhone());
+            company.setAddress(companyRequest.getAddress());
+            return companyRepository.save(company);
+        })
+            .orElseGet(() ->{
+                companyRequest.setId(companyId);
+                return companyRepository.save(companyRequest);
+            });
+
 //        return companyRepository.findById(companyId).map(company -> {
 //            company.setName(companyRequest.getName());
 //            company.setCity(companyRequest.getCity());
 //            company.setPhone(companyRequest.getPhone());
 //            company.setAddress(companyRequest.getAddress());
-            return companyRepository.save(companyRequest);
+//            return companyRepository.save(companyRequest);
 //        }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not founc"));
     }
 
     // GET COMPANY BY ID
     @GetMapping(value = "/companies/{id}")
-    public ResponseEntity<Company> getcompanyById(@PathVariable("id") Long id) {
+    public ResponseEntity<Company> getcompanyById(@PathVariable Long id) {
         Company company = companyRepository.findById(id).get();
         return ResponseEntity.ok().body(company);
     }
 
     //DELETE COMPANY BY ID
     @DeleteMapping("/companies/{id}")
-    public ResponseEntity<?> deleteCompany(@PathVariable Long companyId){
+    public ResponseEntity<?> deleteCompany(@PathVariable(name = "id") Long companyId){
         return companyRepository.findById(companyId).map(company -> {
             companyRepository.delete(company);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not found"));
     }
+
 
 
 }
