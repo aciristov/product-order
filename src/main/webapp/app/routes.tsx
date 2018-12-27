@@ -10,6 +10,7 @@ import PasswordResetFinish from 'app/modules/account/password-reset/finish/passw
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
 import CompanyPage from 'app/modules/company/company';
+import ProductPage from 'app/modules/product/product';
 import Entities from 'app/entities';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
@@ -40,6 +41,9 @@ const Routes = () => (
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <PrivateRoute path="/entity" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <PrivateRoute path="/company" component={CompanyPage} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
+      <PrivateRoute path="/product" component={ProductPage} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]}/>
+
+
       <ErrorBoundaryRoute path="/" component={Home} />
     </Switch>
   </div>

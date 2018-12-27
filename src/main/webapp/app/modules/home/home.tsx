@@ -21,13 +21,23 @@ export class Home extends React.Component<IHomeProp> {
     return (
       <Row>
         <Col md="9">
-          <h2>Welcome, Java Test 1 Hipster!</h2>
-          <p className="lead">This is your homepage</p>
+          <p className="lead">Homepage</p>
           {account && account.login ? (
             <div>
-              <Alert color="success">You are logged in as user {account.login}.</Alert>
+              <Alert color="success">You are logged in as user <strong>{account.login} </strong> .</Alert>
+              <p>
+                From the navigation bar, for example, you can access companies and their products.
+              </p>
+              <p>
+                For some of the pages, admin user has more privileges.
+              </p>
+              <br/>
+
+
+
             </div>
           ) : (
+
             <div>
               <Alert color="warning">
                 If you want to
@@ -48,46 +58,12 @@ export class Home extends React.Component<IHomeProp> {
               </Alert>
             </div>
           )}
-          <p>If you have any question on JHipster:</p>
 
-          <ul>
-            <li>
-              <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-                JHipster homepage
-              </a>
-            </li>
-            <li>
-              <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-                JHipster on Stack Overflow
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-                JHipster bug tracker
-              </a>
-            </li>
-            <li>
-              <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-                JHipster public chat room
-              </a>
-            </li>
-            <li>
-              <a href="https://twitter.com/java_hipster" target="_blank" rel="noopener noreferrer">
-                follow @java_hipster on Twitter
-              </a>
-            </li>
-          </ul>
 
-          <p>
-            If you like JHipster, do not forget to give us a star on{' '}
-            <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              Github
-            </a>!
-          </p>
+
+
         </Col>
-        <Col md="3" className="pad">
-          <span className="hipster rounded" />
-        </Col>
+
       </Row>
     );
   }
