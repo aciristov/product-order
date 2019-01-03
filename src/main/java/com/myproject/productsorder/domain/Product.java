@@ -36,7 +36,6 @@ public class Product {
     @NotNull
     private boolean available;
 
-
     //OneToMany, "Product" AND "OrderProduct"
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orders = new ArrayList<>();

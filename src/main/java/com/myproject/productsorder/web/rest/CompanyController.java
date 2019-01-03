@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/companyAPI")
@@ -29,75 +31,46 @@ public class CompanyController {
     @Autowired
     public CompanyRepository companyRepository;
 
-    // SAVE NEW COMPANY
+
     @PostMapping("/companies")
-    public Company createCompany(@Valid @RequestBody Company company){
+    public Company createCompany(@Valid @RequestBody Company company) {
         Company newCompany = companyRepository.save(company);
         return newCompany;
     }
 
-//    @RequestMapping(value = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> saveCompany(@RequestBody Company company) {
-//        Company newCompany = companyService.save(company);
-//        return ResponseEntity.ok().body(newCompany);
-//    }
 
-    // GET ALL COMPANIES
     @GetMapping("/companies")
-    public Page<Company> getAllCompanies(Pageable pageable){
+    public Page<Company> getAllCompanies(Pageable pageable) {
         return companyRepository.findAll(pageable);
     }
 
-//    @RequestMapping(value = "/getcompanies", method = RequestMethod.GET)
-//    public ResponseEntity<List<Company>> list() {
-//        List<Company> companies = companyService.listAll();
-//        return ResponseEntity.ok().body(companies);
-//    }
 
-    //EDIT COMPANY BY ID
-    @PutMapping("/companies/{id}")
-    public Company updateCompany(@Valid @RequestBody Company companyRequest, @PathVariable(name = "id") Long companyId){
-        if (!companyRepository.existsById(companyId)){
-            throw new ResourceNotFoundException("CompanyId " + companyId + " not exist");
-        }
-
-        return companyRepository.findById(companyId).map(company -> {
-            company.setName(companyRequest.getName());
-            company.setCity(companyRequest.getCity());
-            company.setPhone(companyRequest.getPhone());
-            company.setAddress(companyRequest.getAddress());
-            return companyRepository.save(company);
-        })
-            .orElseGet(() ->{
-                companyRequest.setId(companyId);
-                return companyRepository.save(companyRequest);
-            });
-
-//        return companyRepository.findById(companyId).map(company -> {
-//            company.setName(companyRequest.getName());
-//            company.setCity(companyRequest.getCity());
-//            company.setPhone(companyRequest.getPhone());
-//            company.setAddress(companyRequest.getAddress());
-//            return companyRepository.save(companyRequest);
-//        }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not founc"));
-    }
-
-    // GET COMPANY BY ID
     @GetMapping(value = "/companies/{id}")
     public ResponseEntity<Company> getcompanyById(@PathVariable Long id) {
         Company company = companyRepository.findById(id).get();
         return ResponseEntity.ok().body(company);
     }
 
-    //DELETE COMPANY BY ID
+
+    @PutMapping("/companies/{id}")
+    public ResponseEntity<Object> updateCompany(@RequestBody Company company, @PathVariable long id) {
+        Optional<Company> companyOptional = companyRepository.findById(id);
+        if (!companyOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        company.setId(id);
+        companyRepository.save(company);
+        return ResponseEntity.ok().build();
+    }
+
+
     @DeleteMapping("/companies/{id}")
-    public ResponseEntity<?> deleteCompany(@PathVariable(name = "id") Long companyId){
+    public ResponseEntity<?> deleteCompany(@PathVariable(name = "id") Long companyId) {
         return companyRepository.findById(companyId).map(company -> {
             companyRepository.delete(company);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not found"));
     }
-
 
 
 }

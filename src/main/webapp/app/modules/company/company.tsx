@@ -119,8 +119,6 @@ class CompanyPage extends React.Component {
       })
   }
 
-
-
   render() {
 
     let companies = this.state.companies.map(company => {
@@ -142,9 +140,12 @@ class CompanyPage extends React.Component {
     });
 
     return (
+
+      //CONTAINER
+
       <div className="App container">
 
-        <h2> Companies App </h2>
+        <h3> <strong> Companies </strong> </h3>
         <br/><Button className="my-1" color="primary" onClick={this.toggleNewCompanyModal.bind(this)}>Add Company</Button><br/><br/>
 
   {/*MODAL FOR POST MODAL, CREATE COMPANY!!!*/}

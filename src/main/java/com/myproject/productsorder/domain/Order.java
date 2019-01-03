@@ -17,7 +17,7 @@ import java.util.*;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private double quantity;
@@ -28,16 +28,27 @@ public class Order {
     private String description;
 
 
-    // ONETOMANY BETWEEN "OrderProduct" and "Order"
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List <OrderProduct> products = new ArrayList<>();
 
-    //JUST DEFAULT CONSTRUCTOR
+    // ONETOMANY BETWEEN "OrderProduct" and "Order"
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List <OrderProduct> products = new ArrayList<>();
+
+
+
+    private Set<OrderProduct> orderProduct = new HashSet<OrderProduct>();
+
+    @OneToMany(mappedBy = "order")
+    public Set<OrderProduct> getOrderProduct(){
+        return orderProduct;
+    }
+
+
+
     public Order(){
 
     }
 
-    //ONETOMANY "USER AND ORDER" , many orders for user
+    //MANYTOONE "USER AND ORDER" , many orders for user
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -66,23 +77,27 @@ public class Order {
 
 
     // ADD PRODUCT TO PRODUCTS FROM THE LIST ABOVE, FOR ORDER. -> ONE ORDER MANY PRODUCTS
-    public void addProduct(Product product) {
-        OrderProduct orderProduct = new OrderProduct(this, product);
-        products.add(orderProduct);
-        //product.getOrders().add(orderProduct);
+//    public void addProduct(Product product) {
+//        OrderProduct orderProduct = new OrderProduct(this, product);
+//        products.add(orderProduct);
+//        //product.getOrders().add(orderProduct);
+//    }
+
+    public void addProduct(OrderProduct product){
+        this.orderProduct.add(product);
     }
 
-    public void removeProduct(Product product){
-        for (Iterator<OrderProduct> iterator = products.iterator(); iterator.hasNext(); ){
-            OrderProduct orderProduct = iterator.next();
-            if (orderProduct.getOrder().equals(this) && orderProduct.getProduct().equals(product)){
-                iterator.remove();
-                orderProduct.getProduct().getOrders().remove(orderProduct);
-                orderProduct.setOrder(null);
-                orderProduct.setProduct(null);
-            }
-        }
-    }
+//    public void removeProduct(Product product){
+//        for (Iterator<OrderProduct> iterator = products.iterator(); iterator.hasNext(); ){
+//            OrderProduct orderProduct = iterator.next();
+//            if (orderProduct.getOrder().equals(this) && orderProduct.getProduct().equals(product)){
+//                iterator.remove();
+//                orderProduct.getProduct().getOrders().remove(orderProduct);
+//                orderProduct.setOrder(null);
+//                orderProduct.setProduct(null);
+//            }
+//        }
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -101,13 +116,13 @@ public class Order {
     //GETTERS AND SETTERS BELOW
 
 
-    public List<OrderProduct> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<OrderProduct> products) {
-        this.products = products;
-    }
+//    public List<OrderProduct> getProducts() {
+//        return products;
+//    }
+//
+//    public void setProducts(List<OrderProduct> products) {
+//        this.products = products;
+//    }
 
     public Long getId() {
         return id;
