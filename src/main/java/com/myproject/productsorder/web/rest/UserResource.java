@@ -149,6 +149,25 @@ public class UserResource {
     }
 
     /**
+     * GET /users/user_id
+     * Return the user with Id
+     * Added for testing of "order"
+     */
+    @GetMapping(value = "/users/{id}")
+    public ResponseEntity<User> getuserById(@PathVariable Long id){
+        User user = userRepository.findById(id).get();
+        return ResponseEntity.ok().body(user);
+    }
+
+    /**
+     * For taking "order" or "orders" for user_Id,
+     * GET method in OrderTest controller.
+     */
+//    @GetMapping("/users/{userId}/orders/{orderId}")
+//    ...
+
+
+    /**
      * @return a string list of the all of the roles
      */
     @GetMapping("/users/authorities")

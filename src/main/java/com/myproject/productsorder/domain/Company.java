@@ -13,7 +13,7 @@ public class Company {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @NotNull
+    @NotNull // need @valid in controller
     @Size(max = 150)
     @Column(unique = true)
     private String name;

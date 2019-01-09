@@ -18,25 +18,20 @@ public class OrderProduct {
     private OrderProductId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("orderid")
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "orderId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @MapsId("orderId")
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("productid")
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "productId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @MapsId("productId")
     private Product product;
-
 
     // TODO: MAYBE IN OTHER CLASSES, CHECK!
 //    private double quantity;
-//
 //    private double unit_price;
-//
 //    public double totalPrice(){
 //        return quantity * unit_price;
 //    }
@@ -46,6 +41,7 @@ public class OrderProduct {
     public OrderProduct(Order order, Product product){
         this.order = order;
         this.product = product;
+        this.id = new OrderProductId(order.getId(), product.getId());
     }
 
     @Override
@@ -69,31 +65,18 @@ public class OrderProduct {
         return id;
     }
 
-    public void setId(OrderProductId id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
+    public void setId(OrderProductId id) { this.id = id; }
 
     public void setOrder(Order order) {
         this.order = order;
     }
 
-    public Product getProduct() {
-        return product;
-    }
+    public Order getOrder() { return order; }
+
+    public Product getProduct() { return product; }
 
     public void setProduct(Product product) {
         this.product = product;
     }
-//
-//    public double getQuantity() {
-//        return quantity;
-//    }
-//
-//    public void setQuantity(double quantity) {
-//        this.quantity = quantity;
-//    }
+
 }

@@ -4,6 +4,7 @@ import com.myproject.productsorder.domain.Order;
 import com.myproject.productsorder.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,11 +22,22 @@ public class OrderServiceImp implements OrderService {
     @Override
     public List<Order> listAll() {
         return orderRepository.findAll();
-
     }
 
     @Override
     public Order getOrder(Long id) {
         return orderRepository.findById(id).get();
     }
+
+    @Transactional
+    @Override
+    public void update(Long id, Order order){
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void delete(Order o){
+        orderRepository.delete(o);
+    }
+
 }

@@ -9,9 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "product")
@@ -36,7 +34,8 @@ public class Product {
     @NotNull
     private boolean available;
 
-    //OneToMany, "Product" AND "OrderProduct"
+
+//    OneToMany, "Product" AND "OrderProductService"
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orders = new ArrayList<>();
 
@@ -44,16 +43,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("company_id")
     private Company company;
 
 
-    // JUST DEFAULT CONSTRUCTOR
-    public Product(){
-
-    }
+    public Product(){}
 
     //CONSTRUCTOR WITH ARGUMENTS
     public Product(String name, double unitprice, String description, boolean available){
@@ -62,8 +55,6 @@ public class Product {
         this.description = description;
         this.available = available;
     }
-
-    // OVERRIDEN METHODS FROM THE OBJECT
 
     @Override
     public boolean equals(Object o) {
@@ -79,14 +70,6 @@ public class Product {
     }
 
     // GETTERS AND SETTERS BELOW
-
-    public List<OrderProduct> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrderProduct> orders) {
-        this.orders = orders;
-    }
 
     public Long getId() {
         return id;
@@ -132,7 +115,9 @@ public class Product {
         return available;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
+    public void setAvailable(boolean available) { this.available = available; }
+
+    public List<OrderProduct> getOrders() { return orders; }
+
+    public void setOrders(List<OrderProduct> orders) { this.orders = orders; }
 }

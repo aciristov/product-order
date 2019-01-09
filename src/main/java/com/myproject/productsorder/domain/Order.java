@@ -1,95 +1,66 @@
 package com.myproject.productsorder.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
-@Table(name = "order")
+@Table(name = "order", schema = "order")
+@NaturalIdCache
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    private double quantity;
+    @NotNull
+    private Long quantity;
 
-    private Date orderDate;
+//    @NotNull
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+//    private Date orderDate;
 
+    @NotNull
     @Size(max = 200)
     private String description;
 
+//   OneToMany -> "OrderProductService" , "Order"
+    //@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List <OrderProduct> products = new ArrayList<>();
 
-
-    // ONETOMANY BETWEEN "OrderProduct" and "Order"
-//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List <OrderProduct> products = new ArrayList<>();
-
-
-
-    private Set<OrderProduct> orderProduct = new HashSet<OrderProduct>();
-
-    @OneToMany(mappedBy = "order")
-    public Set<OrderProduct> getOrderProduct(){
-        return orderProduct;
-    }
-
-
-
-    public Order(){
-
-    }
-
-    //MANYTOONE "USER AND ORDER" , many orders for user
+    //ManyToOne "User" , "Order"
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty("user_id")
+    @JsonIgnore
     private User user;
 
-
-    //CONSTRUCTOR WITH ARGUMENTS
-    public Order(Date orderDate, int quantity, String description){
-        this.orderDate = orderDate;
+    public Order(){}
+    public Order(Date orderDate, Long quantity, String description){
+//        this.orderDate = orderDate;
         this.quantity = quantity;
         this.description = description;
     }
 
-
-//MANY YO MANY RELATION - ORDER AND PRODUCT, BETWEEN JOIN TABLE "OrderProduct", WHO HAS FOREIGN KEYS FROM TWO TABLES
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    @JoinTable(
-//        name = "OrderProduct",
-//        joinColumns = {@JoinColumn(name = "orderId")},
-//        inverseJoinColumns = {@JoinColumn(name = "productId")}
-//    )
-//    private Set<Product> products = new HashSet<>();
-
-
-    // ADD PRODUCT TO PRODUCTS FROM THE LIST ABOVE, FOR ORDER. -> ONE ORDER MANY PRODUCTS
 //    public void addProduct(Product product) {
 //        OrderProduct orderProduct = new OrderProduct(this, product);
 //        products.add(orderProduct);
-//        //product.getOrders().add(orderProduct);
+//        product.getOrders().add(orderProduct);
 //    }
-
-    public void addProduct(OrderProduct product){
-        this.orderProduct.add(product);
-    }
-
+//
 //    public void removeProduct(Product product){
-//        for (Iterator<OrderProduct> iterator = products.iterator(); iterator.hasNext(); ){
+//        for (Iterator<OrderProduct> iterator = products.iterator();
+//             iterator.hasNext();
+//             ){
 //            OrderProduct orderProduct = iterator.next();
+//
 //            if (orderProduct.getOrder().equals(this) && orderProduct.getProduct().equals(product)){
 //                iterator.remove();
 //                orderProduct.getProduct().getOrders().remove(orderProduct);
@@ -115,15 +86,6 @@ public class Order {
 
     //GETTERS AND SETTERS BELOW
 
-
-//    public List<OrderProduct> getProducts() {
-//        return products;
-//    }
-//
-//    public void setProducts(List<OrderProduct> products) {
-//        this.products = products;
-//    }
-
     public Long getId() {
         return id;
     }
@@ -136,23 +98,32 @@ public class Order {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
+//    public Date getOrderDate() {
+//        return orderDate;
+//    }
+//
+//    public void setOrderDate(Date orderDate) {
+//        this.orderDate = orderDate;
+//    }
 
     public String getDescription() {
         return description;
     }
 
+//    public List<OrderProduct> getProducts() { return products; }
+//
+//    public void setProducts(List<OrderProduct> products) { this.products = products; }
+
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
 }
