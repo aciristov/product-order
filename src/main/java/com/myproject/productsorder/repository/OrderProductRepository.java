@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderProductRepository extends JpaRepository<OrderProduct, Long> {
 
     Page<OrderProduct> findByProductId(Long productId, Pageable pageable);
-
-
+    Page<OrderProduct> findByOrderId(Long orderId, Pageable pageable);
+    Optional<OrderProduct> findById(Long id);
 
 }

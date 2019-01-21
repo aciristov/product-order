@@ -21,7 +21,7 @@ public class OrderProduct {
     @JoinColumn(name = "orderId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @MapsId("orderId")
-    private Order order;
+    private OrderTest order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", nullable = false)
@@ -38,7 +38,7 @@ public class OrderProduct {
 
     private OrderProduct(){}
 
-    public OrderProduct(Order order, Product product){
+    public OrderProduct(OrderTest order, Product product){
         this.order = order;
         this.product = product;
         this.id = new OrderProductId(order.getId(), product.getId());
@@ -66,12 +66,6 @@ public class OrderProduct {
     }
 
     public void setId(OrderProductId id) { this.id = id; }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Order getOrder() { return order; }
 
     public Product getProduct() { return product; }
 

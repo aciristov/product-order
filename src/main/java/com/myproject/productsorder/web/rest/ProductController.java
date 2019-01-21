@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * productAPI as base url,
+ * then it comes companies and products for companies
+ */
 
 @RestController
 @RequestMapping("/productAPI")
@@ -31,6 +35,10 @@ public class ProductController {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @GetMapping("/products")
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
 
     @PostMapping("/companies/{companyId}/products")
     public Product createProduct(@PathVariable Long companyId, @Valid @RequestBody Product product ){
@@ -42,7 +50,8 @@ public class ProductController {
 
 
     @GetMapping("/companies/{companyId}/products")
-    public Page<Product> getAllProductsByCompanyId(@PathVariable (value = "companyId") Long companyId, Pageable pageable){
+    public Page<Product> getAllProductsByCompanyId(@PathVariable (value = "companyId") Long companyId,
+                                                   Pageable pageable){
         return productRepository.findByCompanyId(companyId, pageable);
     }
 

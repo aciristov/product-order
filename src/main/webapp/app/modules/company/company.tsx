@@ -21,13 +21,15 @@ class CompanyPage extends React.Component {
       phone: '',
       address: ''
     },
+
+    products: [],
+    listProductsModal: false,
+
     newCompanyModal: false,
     editCompanyModal: false
   };
 
-
   componentWillMount() {
-
     const token = Storage.local.get('jhi-authenticationToken') || Storage.session.get('jhi-authenticationToken');
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -51,6 +53,12 @@ class CompanyPage extends React.Component {
   toggleEditCompanyModal() {
     this.setState({
       editCompanyModal: ! this.state.editCompanyModal
+    });
+  }
+
+  toggleListProductsModal(){
+    this.setState({
+      listProductsModal: ! this.state.listProductsModal
     });
   }
 
@@ -119,6 +127,13 @@ class CompanyPage extends React.Component {
       })
   }
 
+  listProducts(id){
+    axios.get('http://localhost:8080/productAPI/companies/'+ id +'/products').then(response =>{
+      const products = response.data.content;
+      this.setState({products});
+    });
+  }
+
   render() {
 
     let companies = this.state.companies.map(company => {
@@ -132,9 +147,21 @@ class CompanyPage extends React.Component {
           <td>{company.address}</td>
 
           <td>
+            <Button color="info" size="sm" className="mr-2" onClick={this.listProducts.bind(this, company.id)} >List Products</Button>
             <Button color="success" size="sm" className="mr-2" onClick={this.editCompany.bind(this, company.id, company.name, company.city, company.phone, company.address)} >Edit</Button>
             <Button color="danger" size="sm" onClick={this.deleteCompany.bind(this, company.id)} >Delete</Button>
           </td>
+        </tr>
+      )
+    });
+
+    let list_products = this.state.products.map(product => {
+      return (
+        <tr key={product.id}>
+          <td>{product.id}</td>
+          <td>{product.name}</td>
+          <td>{product.unitprice}</td>
+          <td>{product.description}</td>
         </tr>
       )
     });
@@ -146,9 +173,10 @@ class CompanyPage extends React.Component {
       <div className="App container">
 
         <h3> <strong> Companies </strong> </h3>
-        <br/><Button className="my-1" color="primary" onClick={this.toggleNewCompanyModal.bind(this)}>Add Company</Button><br/><br/>
 
-  {/*MODAL FOR POST MODAL, CREATE COMPANY!!!*/}
+        {/*MODAL FOR POST MODAL, CREATE COMPANY!!!*/}
+
+        <br/><Button className="my-1" color="primary" onClick={this.toggleNewCompanyModal.bind(this)}>Add Company</Button><br/><br/>
 
                     <Modal isOpen={this.state.newCompanyModal} toggle={this.toggleNewCompanyModal.bind(this)}>
                       <ModalHeader toggle={this.toggleNewCompanyModal.bind(this)}>Add a new company</ModalHeader>
@@ -215,6 +243,38 @@ class CompanyPage extends React.Component {
                     </Modal>
 
   {/*END MODAL FOR POST!!! */}
+
+  {/* START MODAL FOR LISTING PRODUCTS */}
+
+        <Modal isOpen={this.state.listProductsModal} toggle={this.toggleListProductsModal.bind(this)}>
+          <ModalHeader toggle={this.toggleListProductsModal.bind(this)}>List Products</ModalHeader>
+
+          <ModalBody>
+
+              <FormGroup>
+
+                <tr>
+                  <td>#</td>
+                  <td>Name</td>
+                  <td>Price</td>
+                  <td>Description</td>
+                </tr>
+                <tr>
+                  {list_products}
+                </tr>
+
+              </FormGroup>
+
+          </ModalBody>
+
+          <ModalFooter>
+
+            <Button color="secondary" onClick={this.toggleListProductsModal.bind(this)}>Cancel</Button>
+
+          </ModalFooter>
+        </Modal>
+
+  {/* END MODAL FOR LISTING PRODUCTS */}
 
   {/*START MODAL FOR EDIT!!!*/}
 
