@@ -4,10 +4,14 @@ import axios from 'axios';
 import {Input, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Table, Button} from 'reactstrap';
 import {Storage} from "react-jhipster";
 
+
+
 class CompanyPage extends React.Component {
 
   state = {
     companies: [],
+    products: [],
+
     newCompanyData: {
       name: '',
       city: '',
@@ -22,11 +26,12 @@ class CompanyPage extends React.Component {
       address: ''
     },
 
-    products: [],
     listProductsModal: false,
 
     newCompanyModal: false,
-    editCompanyModal: false
+    editCompanyModal: false,
+
+
   };
 
   componentWillMount() {
@@ -40,7 +45,15 @@ class CompanyPage extends React.Component {
         this.setState({companies});
       });
 
+    axios.get("http://localhost:8080/productAPI/products")
+      .then((response) => {
+        this.setState({
+          products: response.data.content
+        })
+      });
+
     this._refreshCompanies();
+
 
   }
 
@@ -119,20 +132,22 @@ class CompanyPage extends React.Component {
     });
   }
 
+  listProducts(company_id){
+    axios.get('http://localhost:8080/productAPI/companies/' + company_id + '/products')
+      .then(response => {
+        const products = response.data.content;
+        this.setState({products, listProductsModal: ! this.state.listProductsModal});
+      });
+  }
+
   _refreshCompanies(){
     axios.get('http://localhost:8080/companyAPI/companies')
       .then(res => {
         const companies = res.data.content;
         this.setState({companies});
-      })
+      });
   }
 
-  listProducts(id){
-    axios.get('http://localhost:8080/productAPI/companies/'+ id +'/products').then(response =>{
-      const products = response.data.content;
-      this.setState({products});
-    });
-  }
 
   render() {
 
@@ -155,16 +170,27 @@ class CompanyPage extends React.Component {
       )
     });
 
-    let list_products = this.state.products.map(product => {
-      return (
-        <tr key={product.id}>
-          <td>{product.id}</td>
-          <td>{product.name}</td>
-          <td>{product.unitprice}</td>
-          <td>{product.description}</td>
-        </tr>
-      )
-    });
+    // let list_products = this.state.products.map(product => {
+    //   return (
+    //     <tr key={product.id}>
+    //       <td>{product.id}</td>
+    //       <td>{product.name}</td>
+    //       <td>{product.unitprice}</td>
+    //       <td>{product.description}</td>
+    //     </tr>
+    //   )
+    // });
+
+    let products = this.state.products;
+    let optionItems = products.map((product) =>
+      <tr key={product.name}>
+        <hr />
+        <td>{product.name}</td> 
+        <td>{product.description}</td>
+        <hr />
+      </tr>
+
+    );
 
     return (
 
@@ -227,9 +253,7 @@ class CompanyPage extends React.Component {
 
                               this.setState({ newCompanyData });
 
-
                             }} />
-
 
                           </FormGroup>
 
@@ -247,25 +271,16 @@ class CompanyPage extends React.Component {
   {/* START MODAL FOR LISTING PRODUCTS */}
 
         <Modal isOpen={this.state.listProductsModal} toggle={this.toggleListProductsModal.bind(this)}>
-          <ModalHeader toggle={this.toggleListProductsModal.bind(this)}>List Products</ModalHeader>
+          <ModalHeader toggle={this.toggleListProductsModal.bind(this)}>Products for this company
+          </ModalHeader>
 
-          <ModalBody>
+            <ModalBody>
 
-              <FormGroup>
+              <div>
+                {optionItems}
+              </div>
 
-                <tr>
-                  <td>#</td>
-                  <td>Name</td>
-                  <td>Price</td>
-                  <td>Description</td>
-                </tr>
-                <tr>
-                  {list_products}
-                </tr>
-
-              </FormGroup>
-
-          </ModalBody>
+            </ModalBody>
 
           <ModalFooter>
 
@@ -359,7 +374,7 @@ class CompanyPage extends React.Component {
 
           <tbody>
 
-          {/*MAP ALL THE COMPANIES WITH TD*/}
+          {/*MAP ALL THE COMPANIES*/}
           { companies }
 
           </tbody>
