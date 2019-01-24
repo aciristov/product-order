@@ -6,8 +6,6 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 import {Storage} from "react-jhipster";
 import {bool} from "prop-types";
 
-import ReactDOM from 'react-dom';
-import {Route, withRouter} from 'react-router-dom';
 
 class ProductPage extends React.Component {
 
@@ -19,7 +17,7 @@ class ProductPage extends React.Component {
       name: '',
       unitprice: '',
       description: '',
-      available: bool,
+      available: true,
       company: ''
     },
 
@@ -33,13 +31,15 @@ class ProductPage extends React.Component {
     },
 
     newProductModal: false,
-    editProductModal: false
+    editProductModal: false,
 
+    query: '',
+
+    search: '',
 
   };
 
   componentWillMount(){
-
     const token = Storage.local.get('jhi-authenticationToken') || Storage.session.get('jhi-authenticationToken');
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -58,9 +58,39 @@ class ProductPage extends React.Component {
         })
       });
   }
+/////////////////////////////////// AUTOCOMPLETE METHODS BELOW
 
-  createNewProduct(company_id){
-    axios.post('http://localhost:8080/productAPI/companies/' + company_id + '/products', this.state.newProductData)
+  _refreshProducts(){
+    axios.get('http://localhost:8080/productAPI/products')
+      .then(res => {
+        const products = res.data.content;
+        this.setState({products});
+      });
+  }
+
+  handleInputChange = (e) => {
+    console.log("search:", e.target.value);
+   /* this.setState({
+     search:
+    },() => {
+        if (this.state.query && this.state.query.length > 1){
+          if (this.state.query.length % 2 === 0) {
+            this._refreshProducts()
+          }
+        }
+      }
+      )*/
+  };
+
+
+  createNewProduct(){
+    const newProduct = {
+      name: this.state.newProductData.name,
+      unitprice: this.state.newProductData.unitprice,
+      description: this.state.newProductData.description,
+      available: true,
+    };
+    axios.post('http://localhost:8080/productAPI/companies/' + this.state.newProductData.company + '/products', newProduct)
       .then(response => {
         let { products } = this.state;
         console.log("RESPONSE : ", + response);
@@ -75,7 +105,7 @@ class ProductPage extends React.Component {
             name: '',
             unitprice: '',
             description: '',
-            available: bool,
+            available: true,
             company: ''
           }
         });
@@ -156,7 +186,7 @@ class ProductPage extends React.Component {
 
     let companies_search = this.state.companies;
     let optionItems = companies_search.map((company) =>
-      <option key={company.name}>{company.name}</option>  /* show just name for each company */
+      <option value={company.id}>{company.name}</option>  /* show just name for each company */
     );
 
     return (
@@ -165,6 +195,12 @@ class ProductPage extends React.Component {
         {/*MODAL FOR POST MODAL, CREATE PRODUCT!!!*/}
 
         <br/><Button className="my-1" color="primary" onClick={this.toggleNewProductModal.bind(this)}>Add Product</Button><br/><br/>
+
+        <form>
+          <input placeholder="Search product" onChange={this.handleInputChange}
+          />
+          <p>{this.state.query}</p>
+        </form>
 
         <Modal isOpen={this.state.newProductModal} toggle={this.toggleNewProductModal.bind(this)}>
           <ModalHeader toggle={this.toggleNewProductModal.bind(this)}>Add new product</ModalHeader>
@@ -227,16 +263,16 @@ class ProductPage extends React.Component {
 
                 <Label>Select for which company: </Label>
                 <div>
-                      <Input type="select" id="option" value={this.state.newProductData.company} onChange={(e) => {
+                      <select onChange={(e) => {
 
                         let { newProductData } = this.state;
 
                         newProductData.company = e.target.value;
 
                         this.setState( { newProductData });
-
+                        console.log(e);
                       }}
-                      > {optionItems} </Input>
+                      > {optionItems} </select>
 
 
                 </div>
@@ -255,7 +291,7 @@ class ProductPage extends React.Component {
         {/*END MODAL FOR CREATE!!! */}
 
 
-        /* MODAL FOR EDITING PRODUCT */
+        {/* MODAL FOR EDITING PRODUCT */}
 
         <Modal isOpen={this.state.editProductModal} toggle={this.toggleEditProductModal.bind(this)}>
           <ModalHeader toggle={this.toggleEditProductModal.bind(this)}>Edit product</ModalHeader>
@@ -326,7 +362,7 @@ class ProductPage extends React.Component {
           </ModalFooter>
         </Modal>
 
-        /* END MODAL FOR EDIT */
+        {/* END MODAL FOR EDIT */}
 
 
         <Table>
