@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import {Input, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Table, Button} from 'reactstrap';
 import {Storage} from "react-jhipster";
+import {bool} from "prop-types";
 
 
 
@@ -53,7 +54,6 @@ class CompanyPage extends React.Component {
       });
 
     this._refreshCompanies();
-
 
   }
 
@@ -140,6 +140,7 @@ class CompanyPage extends React.Component {
       });
   }
 
+
   _refreshCompanies(){
     axios.get('http://localhost:8080/companyAPI/companies')
       .then(res => {
@@ -170,23 +171,12 @@ class CompanyPage extends React.Component {
       )
     });
 
-    // let list_products = this.state.products.map(product => {
-    //   return (
-    //     <tr key={product.id}>
-    //       <td>{product.id}</td>
-    //       <td>{product.name}</td>
-    //       <td>{product.unitprice}</td>
-    //       <td>{product.description}</td>
-    //     </tr>
-    //   )
-    // });
-
     let products = this.state.products;
     let optionItems = products.map((product) =>
       <tr key={product.name}>
         <hr />
-        <td>{product.name}</td> 
-        <td>{product.description}</td>
+        <td >{product.name}</td>
+        <td className="mr-4"> &nbsp;&nbsp;&nbsp; {product.description}</td>
         <hr />
       </tr>
 
@@ -270,7 +260,7 @@ class CompanyPage extends React.Component {
 
   {/* START MODAL FOR LISTING PRODUCTS */}
 
-        <Modal isOpen={this.state.listProductsModal} toggle={this.toggleListProductsModal.bind(this)}>
+        <Modal isOpen={this.state.listProductsModal} toggle={this.toggleListProductsModal.bind(this)} fade={false} >
           <ModalHeader toggle={this.toggleListProductsModal.bind(this)}>Products for this company
           </ModalHeader>
 

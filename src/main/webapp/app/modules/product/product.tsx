@@ -15,15 +15,26 @@ class ProductPage extends React.Component {
     products: [],
     companies: [],
 
-    newProductModal: false,
-
     newProductData: {
       name: '',
       unitprice: '',
       description: '',
       available: bool,
       company: ''
-    }
+    },
+
+    editProductData: {
+      id: '',
+      name: '',
+      unitprice: '',
+      description: '',
+      available: '',
+      company: ''
+    },
+
+    newProductModal: false,
+    editProductModal: false
+
 
   };
 
@@ -73,8 +84,40 @@ class ProductPage extends React.Component {
 
   }
 
-  getAllCompanies(){
+  updateProduct(){
+    let {name, unitprice, description, available} = this.state.editProductData;
+    axios.put(`http://localhost:8080/productAPI/companies/` + this.state.editProductData.company + '/products/' + this.state.editProductData.id , {
+      name, unitprice, description, available
+    }).then((response) => {
+      let { products } = this.state;
+      console.log(response);
+      const updatedProduct = response.data;
 
+      const updatedProducts = products.map(product => {
+        if (product.id !== updatedProduct.id) {
+          return product;
+        }
+        return updatedProduct;
+      });
+      this.setState({ ...this.state,  products: updatedProducts});
+      this.toggleEditProductModal();
+    });
+  }
+
+  editProduct(id, name, unitprice, description, available){
+    this.setState({ editProductData: {
+        id, name, unitprice, description, available
+      }, editProductModal: ! this.state.editProductModal
+    });
+  }
+
+  deleteProduct(id){
+    axios.delete('http://localhost:8080/productAPI/companies/1/products/'+ id).then(response =>{
+      let { products } = this.state;
+
+      const filterProducts = products.filter(product => product.id !== id);
+      this.setState({ ...this.state,  products: filterProducts});
+    });
   }
 
   toggleNewProductModal(){
@@ -82,6 +125,15 @@ class ProductPage extends React.Component {
       newProductModal: ! this.state.newProductModal
     });
   }
+
+  toggleEditProductModal() {
+    this.setState({
+      editProductModal: ! this.state.editProductModal
+    });
+  }
+
+  // TODO : UPDATE FOR PRODUCT
+  // TODO : AUTOCOMPLETE FOR SEARCHING, SEE ALSO https://alligator.io/react/react-autocomplete/
 
   render() {
 
@@ -94,8 +146,8 @@ class ProductPage extends React.Component {
           <td>{product.description}</td>
           <td>{product.available}</td>
           <td>
-            <Button color="success" size="sm" className="mr-2">Edit</Button>
-            <Button color="danger" size="sm" >Delete</Button>
+            <Button color="success" size="sm" className="mr-2" onClick={this.editProduct.bind(this, product.id, product.name, product.unitprice, product.description, product.available)}>Edit</Button>
+            <Button color="danger" size="sm" onClick={this.deleteProduct.bind(this, product.id)} >Delete</Button>
           </td>
         </tr>
       )
@@ -202,6 +254,79 @@ class ProductPage extends React.Component {
 
         {/*END MODAL FOR CREATE!!! */}
 
+
+        /* MODAL FOR EDITING PRODUCT */
+
+        <Modal isOpen={this.state.editProductModal} toggle={this.toggleEditProductModal.bind(this)}>
+          <ModalHeader toggle={this.toggleEditProductModal.bind(this)}>Edit product</ModalHeader>
+
+          <ModalBody>
+
+            <FormGroup>
+              <Label for="name"> Name </Label>
+              <Input id="name" value={this.state.editProductData.name} onChange={(e) => {
+
+                let { editProductData } = this.state;
+
+                editProductData.name = e.target.value;
+
+                this.setState({ editProductData });
+
+              }} />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="unitprice"> Unitprice </Label>
+              <Input id="unitprice" value={this.state.editProductData.unitprice} onChange={(e) => {
+
+                let { editProductData } = this.state;
+
+                editProductData.unitprice = e.target.value;
+
+                this.setState({ editProductData });
+
+              }}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="description"> Description </Label>
+              <Input id="description" value={this.state.editProductData.description} onChange={(e) => {
+
+                let { editProductData } = this.state;
+
+                editProductData.description = e.target.value;
+
+                this.setState({ editProductData });
+
+              }}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="available"> Available </Label>
+              <Input id="available" value={this.state.editProductData.available} onChange={(e) => {
+
+                let { editProductData } = this.state;
+
+                editProductData.available = e.target.value;
+
+                this.setState({ editProductData });
+
+              }}
+              />
+            </FormGroup>
+
+          </ModalBody>
+
+          <ModalFooter>
+
+            <Button color="primary" onClick={this.updateProduct.bind(this)}>Update Product</Button>{' '}
+            <Button color="secondary" onClick={this.toggleEditProductModal.bind(this)}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+
+        /* END MODAL FOR EDIT */
 
 
         <Table>
