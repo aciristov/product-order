@@ -7,6 +7,7 @@ import {Storage} from "react-jhipster";
 import {bool} from "prop-types";
 
 
+
 class ProductPage extends React.Component {
 
   state = {
@@ -162,7 +163,6 @@ class ProductPage extends React.Component {
     });
   }
 
-  // TODO : UPDATE FOR PRODUCT
   // TODO : AUTOCOMPLETE FOR SEARCHING, SEE ALSO https://alligator.io/react/react-autocomplete/
 
   render() {
@@ -273,6 +273,7 @@ class ProductPage extends React.Component {
                         console.log(e);
                       }}
                       > {optionItems} </select>
+
 
 
                 </div>

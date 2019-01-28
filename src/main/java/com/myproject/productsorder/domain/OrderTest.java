@@ -1,5 +1,6 @@
 package com.myproject.productsorder.domain;
 
+import com.myproject.productsorder.service.UserService;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -31,13 +32,6 @@ public class OrderTest {
     @NotNull
     @Column(name = "date")
     private Date orderDate;
-
-    public OrderTest(){}
-    public OrderTest(String description, int quantity, Date orderDate){
-        this.description = description;
-        this.quantity = quantity;
-        this.orderDate = orderDate;
-    }
 
     /**
      * Many orders to one user.

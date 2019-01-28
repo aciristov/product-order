@@ -5,6 +5,7 @@ import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.OrderTestRepository;
 import com.myproject.productsorder.repository.UserRepository;
 import com.myproject.productsorder.security.AuthoritiesConstants;
+import com.myproject.productsorder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.Console;
+
 
 @RestController
 @RequestMapping("/orderAPI")
@@ -24,6 +27,14 @@ public class OrderTestController {
 
     @Autowired
     private UserRepository userRepository;
+
+    /*
+    * Just for testing purposes
+    * Every user post his own order -> next post method
+     */
+    @Autowired
+    private UserService userService;
+
 
     @PostMapping("/orders")
     public OrderTest createOrder(@RequestBody OrderTest orderTest){
@@ -42,6 +53,12 @@ public class OrderTestController {
     @GetMapping("/users/{userId}/orders")
     public Page<OrderTest> getAllOrdersByUserId(@PathVariable Long userId, Pageable pageable){
         return orderTestRepository.findByUserId(userId, pageable);
+    }
+
+    @GetMapping("/user/orders")
+    public Page<OrderTest> getAllOrdersByUserIdTest(Long userId, Pageable pageable){
+        userId = userService.getUserWithAuthorities().get().getId();
+        return orderTestRepository.findByUserId(userId , pageable);
     }
 
     @GetMapping("/users/{userId}/orders/{orderId}")
