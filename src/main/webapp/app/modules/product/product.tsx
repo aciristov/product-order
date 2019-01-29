@@ -142,6 +142,7 @@ class ProductPage extends React.Component {
     });
   }
 
+  // TODO: SEE THIS
   deleteProduct(id){
     axios.delete('http://localhost:8080/productAPI/companies/1/products/'+ id).then(response =>{
       let { products } = this.state;
@@ -274,8 +275,6 @@ class ProductPage extends React.Component {
                       }}
                       > {optionItems} </select>
 
-
-
                 </div>
 
               </FormGroup>
@@ -371,7 +370,7 @@ class ProductPage extends React.Component {
           <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Unitprice</th>
+            <th>Unit Price</th>
             <th>Description</th>
             {/*<th>Is available</th>*/}
           </tr>

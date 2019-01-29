@@ -42,22 +42,24 @@ public class OrderTestController {
         return newOrder;
     }
 
-    @PostMapping("/users/{userId}/orders")
-    public OrderTest createUserOrder(@PathVariable Long userId, @Valid @RequestBody OrderTest orderTest){
+    /*
+    * Post order for authorized user
+     */
+    @PostMapping("/user/orders")
+    public OrderTest createUserOrderTest(Long userId, @Valid @RequestBody OrderTest orderTest){
+        userId = userService.getUserWithAuthorities().get().getId();
         return userRepository.findById(userId).map(user -> {
             orderTest.setUser(user);
             return orderTestRepository.save(orderTest);
-        }).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId + " not found!"));
+        }).orElseThrow(() -> new ResourceNotFoundException("User does not exist!"));
     }
 
-    @GetMapping("/users/{userId}/orders")
-    public Page<OrderTest> getAllOrdersByUserId(@PathVariable Long userId, Pageable pageable){
-        return orderTestRepository.findByUserId(userId, pageable);
-    }
-
+    /*
+     * Get orders for authorized user
+     */
     @GetMapping("/user/orders")
-    public Page<OrderTest> getAllOrdersByUserIdTest(Long userId, Pageable pageable){
-        userId = userService.getUserWithAuthorities().get().getId();
+    public Page<OrderTest> getAllOrdersByUserIdTest(Pageable pageable){
+        Long userId = userService.getUserWithAuthorities().get().getId();
         return orderTestRepository.findByUserId(userId , pageable);
     }
 
@@ -67,10 +69,25 @@ public class OrderTestController {
         return ResponseEntity.ok().body(orderTest);
     }
 
-    @PutMapping("/users/{userId}/orders/{orderId}")
-    public OrderTest updateOrderTest(@PathVariable Long userId,
-                                     @PathVariable Long orderId,
+//    @PutMapping("/users/{userId}/orders/{orderId}")
+//    public OrderTest updateOrderTest(@PathVariable Long userId,
+//                                     @PathVariable Long orderId,
+//                                     @Valid @RequestBody OrderTest orderTestRequest){
+//        if (!userRepository.existsById(userId)){
+//            throw new ResourceNotFoundException("UserId " + userId + " not found");
+//        }
+//        return orderTestRepository.findById(orderId).map(orderTest -> {
+//            orderTest.setDescription(orderTestRequest.getDescription());
+//            orderTest.setQuantity(orderTestRequest.getQuantity());
+//            orderTest.setOrderDate(orderTestRequest.getOrderDate());
+//            return orderTestRepository.save(orderTest);
+//        }).orElseThrow(()-> new ResourceNotFoundException("OrderTestId " + orderId + " not found"));
+//    }
+
+    @PutMapping("/user/orders/{orderId}")
+    public OrderTest updateOrderTest(@PathVariable Long orderId,
                                      @Valid @RequestBody OrderTest orderTestRequest){
+        Long userId = userService.getUserWithAuthorities().get().getId();
         if (!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
@@ -82,9 +99,10 @@ public class OrderTestController {
         }).orElseThrow(()-> new ResourceNotFoundException("OrderTestId " + orderId + " not found"));
     }
 
-    @DeleteMapping("users/{userId}/orders/{orderId}")
-    public ResponseEntity<?> deleteOrderTest(@PathVariable Long userId,
-                                             @PathVariable Long orderId){
+    @DeleteMapping("user/orders/{orderId}")
+    public ResponseEntity<?> deleteOrder(Long userId,
+                                         @PathVariable Long orderId){
+        userId = userService.getUserWithAuthorities().get().getId();
         if(!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
