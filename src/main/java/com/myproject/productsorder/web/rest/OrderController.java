@@ -14,8 +14,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.Console;
-
 
 @RestController
 @RequestMapping("/orderAPI")
@@ -35,7 +33,6 @@ public class OrderTestController {
     @Autowired
     private UserService userService;
 
-
     @PostMapping("/orders")
     public OrderTest createOrder(@RequestBody OrderTest orderTest){
         OrderTest newOrder = orderTestRepository.save(orderTest);
@@ -54,6 +51,8 @@ public class OrderTestController {
         }).orElseThrow(() -> new ResourceNotFoundException("User does not exist!"));
     }
 
+    @
+
     /*
      * Get orders for authorized user
      */
@@ -69,20 +68,12 @@ public class OrderTestController {
         return ResponseEntity.ok().body(orderTest);
     }
 
-//    @PutMapping("/users/{userId}/orders/{orderId}")
-//    public OrderTest updateOrderTest(@PathVariable Long userId,
-//                                     @PathVariable Long orderId,
-//                                     @Valid @RequestBody OrderTest orderTestRequest){
-//        if (!userRepository.existsById(userId)){
-//            throw new ResourceNotFoundException("UserId " + userId + " not found");
-//        }
-//        return orderTestRepository.findById(orderId).map(orderTest -> {
-//            orderTest.setDescription(orderTestRequest.getDescription());
-//            orderTest.setQuantity(orderTestRequest.getQuantity());
-//            orderTest.setOrderDate(orderTestRequest.getOrderDate());
-//            return orderTestRepository.save(orderTest);
-//        }).orElseThrow(()-> new ResourceNotFoundException("OrderTestId " + orderId + " not found"));
-//    }
+    //test GET PRODUCTS FOR ORDER_ID
+    @GetMapping("/orders/{orderId}/products")
+    public Page<OrderTest> getordertestById(@PathVariable (value = "orderId") Long orderId,
+                                            Pageable pageable){
+        return orderTestRepository.findByOrderId(orderId, pageable);
+    }
 
     @PutMapping("/user/orders/{orderId}")
     public OrderTest updateOrderTest(@PathVariable Long orderId,
