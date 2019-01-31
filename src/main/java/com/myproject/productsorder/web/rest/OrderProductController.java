@@ -9,10 +9,9 @@ import com.myproject.productsorder.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/orderProductAPI")
@@ -45,8 +44,24 @@ public class OrderProductController {
     }
 
     /**
-     *
+     * For post:
+     * ex: /orderProductAPI/orders/{orderId}/products
+     * orderId is order.id from key in page component
+     * => all info. that exists from orders and products it is going to be
+     * posted again in OrderProduct table
      */
+
+//    @PostMapping("/orders/{orderId}/products")
+//    public OrderProduct createOrderProduct(@PathVariable Long orderId,
+//                                           @Valid @RequestBody Product product){
+//        return orderTestRepository.findById(orderId).map( order -> {
+//            product.setOrders(order);
+//
+//        })
+//    }
+
+//    @GetMapping("/orders/{orderId}/products")
+//    public Page<OrderProduct>
 
 
 

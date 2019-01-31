@@ -8,6 +8,7 @@ class OrderPage extends React.Component {
 
   state = {
     orders: [],
+    products: [],
 
     newOrderModal: false,
     newOrderData: {
@@ -24,17 +25,38 @@ class OrderPage extends React.Component {
       quantity: '',
       orderDate: '',
       user: '',
-    }
+    },
+
+    openProductsModal: false,
   };
 
   componentWillMount() {
     const token = Storage.local.get('jhi-authenticationToken') || Storage.session.get('jhi-authenticationToken');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
     axios.get('http://localhost:8080/orderAPI/user/orders')
       .then((response) => {
         this.setState({
           orders: response.data.content
         })
+      });
+
+    axios.get("http://localhost:8080/productAPI/products")
+      .then((response) => {
+        this.setState({
+          products: response.data.content
+        })
+      });
+
+    this._refreshCompanies();
+
+  }
+
+  _refreshCompanies() {
+    axios.get('http://localhost:8080/companyAPI/companies')
+      .then(res => {
+        const companies = res.data.content;
+        this.setState({companies});
       });
   }
 
@@ -82,6 +104,17 @@ class OrderPage extends React.Component {
     });
   }
 
+  // TODO: GET FROM ORDERPRODUCT, EDIT THIS
+  openProducts(orderId) {
+
+    axios.get('http://localhost:8080/orderAPI/orders/' + orderId + '/products')
+
+      .then(response => {
+        const products = response.data;
+        this.setState({products, openProductsModal: ! this.state.openProductsModal});
+      });
+  }
+
   updateOrder() {
     let {description, quantity, orderDate} = this.state.editOrderData;
     axios.put('http://localhost:8080/orderAPI/user/orders/' + this.state.editOrderData.id, {
@@ -92,12 +125,12 @@ class OrderPage extends React.Component {
       const updateOrder = response.data;
 
       const updatedOrders = orders.map(order => {
-        if ( order.id !== updateOrder.id){
-        return order;
-      }
-      return updateOrder;
+        if (order.id !== updateOrder.id) {
+          return order;
+        }
+        return updateOrder;
       });
-      this.setState({ ...this.state, orders: updatedOrders});
+      this.setState({...this.state, orders: updatedOrders});
       this.toggleEditOrderModal();
     });
   }
@@ -114,6 +147,12 @@ class OrderPage extends React.Component {
     });
   }
 
+  toggleOpenProductsModal() {
+    this.setState({
+      openProductsModal: !this.state.openProductsModal
+    })
+  }
+
   render() {
 
     let orders = this.state.orders.map((order) => {
@@ -124,6 +163,12 @@ class OrderPage extends React.Component {
           <td>{order.quantity}</td>
           <td>{order.orderDate}</td>
           <td>
+            <Button color="primary" size="sm" className="mr-2" onClick={this.openProducts.bind(this)}>
+              Add Product
+            </Button>
+            <Button color="info" size="sm" className="mr-2" onClick={this.openProducts.bind(this, order.id)}>
+              See Products
+            </Button>
             <Button color="success" size="sm" className="mr-2"
                     onClick={this.editOrder.bind(
                       this, order.id, order.description, order.quantity, order.orderDate)}>Edit</Button>
@@ -132,6 +177,18 @@ class OrderPage extends React.Component {
         </tr>
       )
     });
+
+    let products = this.state.products;
+    let productsItems = products.map(product =>
+      <tr key={product.name}>
+        <td >{product.name}</td>
+
+        <td className="mr-4"> {product.description}</td>
+
+        <td className="mr-4"> {product.unitprice}</td>
+
+      </tr>
+    );
 
     return (
       <div className="App container">
@@ -234,6 +291,35 @@ class OrderPage extends React.Component {
 
         {/* END MODAL EDITING ORDER */}
 
+        <Modal isOpen={this.state.openProductsModal} toggle={this.toggleOpenProductsModal.bind(this)} fade={false} >
+          <ModalHeader toggle={this.toggleOpenProductsModal.bind(this)}>Products for this order
+          </ModalHeader>
+
+          <ModalBody>
+            <Table>
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+              </tr>
+
+              </thead>
+            <tbody>
+              {productsItems}
+            </tbody>
+            </Table>
+          </ModalBody>
+
+          <ModalFooter>
+
+            <Button color="secondary" onClick={this.toggleOpenProductsModal.bind(this)}>Cancel</Button>
+
+          </ModalFooter>
+        </Modal>
+
+        { /* START MODAL FOR LISTING PRODUCTS */}
+
         <Table>
           <thead>
           <tr>
@@ -249,8 +335,8 @@ class OrderPage extends React.Component {
         </Table>
 
       </div>
-  )
+    )
   }
-  }
+}
 
-  export default OrderPage;
+export default OrderPage;

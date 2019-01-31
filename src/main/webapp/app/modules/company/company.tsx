@@ -168,11 +168,6 @@ class CompanyPage extends React.Component {
   //   })
   // };
 
-
-  //for deleting
-
-
-
   //THIS WILL BE RUNNABLE WITH onClick: () =>
   deleteCompany(id){
     axios.delete('http://localhost:8080/companyAPI/companies/'+ id).then(response =>{
@@ -191,7 +186,6 @@ class CompanyPage extends React.Component {
       });
   }
 
-
   _refreshCompanies(){
     axios.get('http://localhost:8080/companyAPI/companies')
       .then(res => {
@@ -200,11 +194,7 @@ class CompanyPage extends React.Component {
       });
   }
 
-
-
   render() {
-
-
 
     let companies = this.state.companies.map(company => {
       return (
@@ -222,7 +212,6 @@ class CompanyPage extends React.Component {
               this,
               // TODO: ALERT
               // TODO: ORDER PAGE
-              // TODO: PRESENTATION
               // MODAL CAN'T BE PLACED IN .MAP FUNCTION, WILL RUN FOR EVERY COMPANY!!!!! ONLY WAY FOR NOW, TO USE STATE: COMPANY_ID
             )} > Alertion </Button>
 
@@ -235,10 +224,6 @@ class CompanyPage extends React.Component {
         </tr>
       )
     });
-
-
-
-
 
     let products = this.state.products;
     let optionItems = products.map((product) =>

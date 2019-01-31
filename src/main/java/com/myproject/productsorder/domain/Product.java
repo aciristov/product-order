@@ -1,7 +1,5 @@
 package com.myproject.productsorder.domain;
 
-import com.fasterxml.jackson.annotation.*;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -36,8 +34,8 @@ public class Product {
 
 
 //    OneToMany, "Product" AND "OrderProductService"
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderProduct> orders = new ArrayList<>();
+  //  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+   // private List<OrderProduct> orders = new ArrayList<>();
 
     //ManyToOne, "Product" AND "Company"
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -117,7 +115,7 @@ public class Product {
 
     public void setAvailable(boolean available) { this.available = available; }
 
-    public List<OrderProduct> getOrders() { return orders; }
+   // public List<OrderProduct> getOrders() { return orders; }
 
-    public void setOrders(List<OrderProduct> orders) { this.orders = orders; }
+    //public void setOrders(List<OrderProduct> orders) { this.orders = orders; }
 }

@@ -3,6 +3,7 @@ package com.myproject.productsorder.web.rest;
 import com.myproject.productsorder.domain.Product;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.CompanyRepository;
+import com.myproject.productsorder.repository.OrderTestRepository;
 import com.myproject.productsorder.repository.ProductRepository;
 import com.myproject.productsorder.security.AuthoritiesConstants;
 
@@ -35,6 +36,9 @@ public class ProductController {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private OrderTestRepository orderTestRepository;
+
     @GetMapping("/products")
     public Page<Product> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable);
@@ -55,12 +59,18 @@ public class ProductController {
         return productRepository.findByCompanyId(companyId, pageable);
     }
 
+    //test
+//    @GetMapping("/orders/{orderId}/products")
+//    public Page<Product> getAllProductsByOrderId(@PathVariable (value = "orderId") Long orderId,
+//                                                 Pageable pageable){
+//        return productRepository.findByOrderId(orderId, pageable);
+//    }
+
     @GetMapping("/companies/{companyId}/products/{productId}")
     public ResponseEntity<Product> getproductById(@PathVariable Long productId) {
         Product product = productRepository.findById(productId).get();
         return ResponseEntity.ok().body(product);
     }
-
 
     @PutMapping("/companies/{companyId}/products/{productId}")
     public Product updateProduct(@PathVariable Long companyId,

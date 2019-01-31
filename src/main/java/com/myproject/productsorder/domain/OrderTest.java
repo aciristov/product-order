@@ -1,10 +1,8 @@
 package com.myproject.productsorder.domain;
 
-import com.myproject.productsorder.service.UserService;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,9 +25,6 @@ public class OrderTest {
     private String description;
 
     @NotNull
-    private int quantity;
-
-    @NotNull
     @Column(name = "date")
     private Date orderDate;
 
@@ -41,26 +36,26 @@ public class OrderTest {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    public OrderTest() {}
+
+    public OrderTest(String description, @NotNull Date orderDate) {
+        this.description = description;
+        this.orderDate = orderDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        OrderTest order = (OrderTest) o;
-        return Objects.equals(description, order.description);
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTest orderTest = (OrderTest) o;
+        return Objects.equals(id, orderTest.id) &&
+            Objects.equals(description, orderTest.description) &&
+            Objects.equals(orderDate, orderTest.orderDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description);
+        return Objects.hash(id, description, orderDate);
     }
 
     public Long getId() {
@@ -79,19 +74,19 @@ public class OrderTest {
         this.description = description;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public Date getOrderDate() {
         return orderDate;
     }
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

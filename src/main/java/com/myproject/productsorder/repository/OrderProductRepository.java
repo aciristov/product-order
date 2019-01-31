@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface OrderProductRepository extends JpaRepository<OrderProduct, Long> {
 
     Page<OrderProduct> findByProductId(Long productId, Pageable pageable);
-    Page<OrderProduct> findByOrderId(Long orderId, Pageable pageable);
+    List <OrderProduct> findByOrderId(Long orderId);
     Optional<OrderProduct> findById(Long id);
 
 }
