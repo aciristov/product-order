@@ -34,7 +34,6 @@ class ProductPage extends React.Component {
     query: '',
 
     search: '',
-
   };
 
   componentWillMount() {

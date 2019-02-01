@@ -23,14 +23,7 @@ class OrderPage extends React.Component {
     newOrderModal: false,
     newOrderData: {
       description: '',
-      products: [
-        {
-          productId: '',
-          quantity: '',
-          price: ''
-        }
-      ],
-      // user: ''
+      products: [],
     },
 
     editOrderModal: false,
@@ -75,13 +68,7 @@ class OrderPage extends React.Component {
   }
 
   createNewOrder() {
-    const newOrder = {
-      description: this.state.newOrderData.description,
-      // quantity: this.state.newOrderData.quantity,
-      // orderDate: this.state.newOrderData.orderDate,
-      products: this.state.newOrderData.products
-    };
-    axios.post('http://localhost:8080/orderAPI/orders', newOrder)
+    axios.post('http://localhost:8080/orderAPI/orders', this.state.newOrderData)
       .then(response => {
         let {orders} = this.state;
         orders.push(response.data);
@@ -177,11 +164,9 @@ class OrderPage extends React.Component {
           <td>{order.quantity}</td>
           <td>{order.orderDate.split("T")[0]}</td>
           <td>
-
             <Button color="info" size="sm" className="mr-2" onClick={this.openProducts.bind(this, order.id)}>
               See Products
             </Button>
-
             <Button color="success" size="sm" className="mr-2"
                     onClick={this.editOrder.bind(
                       this, order.id, order.description, order.quantity, order.orderDate)}>Edit</Button>
@@ -240,19 +225,10 @@ class OrderPage extends React.Component {
               <div>
                 <select onChange={(e) => {
 
-                  let {newOrderData} = this.state;
+                  let {newOrderData, products} = this.state;
 
-                  // newOrderData.products.push(productId:e.target.value.toString(),) = e.target.value;
-                  // newOrderData.products.push({productId:"1", quantity:"123", price: "123"});
-
-                  newOrderData.products.map(prod => {
-
-                    prod.productId = e.target.value;
-                    // prod.quantity = e.target.value;
-                    // prod.price = e.target.value;
-
-                  });
-                  // newOrderData.products = e.target.value;
+                  let product = products.find(product => product.id.toString() === e.target.value);
+                  newOrderData.products.push({productId: product.id, quantity: "45", price: product.unitprice});
 
                   this.setState({newOrderData});
                   console.log(e);
@@ -260,8 +236,6 @@ class OrderPage extends React.Component {
                 > {optionProducts}
 
                 </select>
-
-                {/*<Button onClick={this.setState({  })}>Add new Product</Button>*/}
 
               </div>
 
