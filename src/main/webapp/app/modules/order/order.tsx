@@ -10,12 +10,27 @@ class OrderPage extends React.Component {
     orders: [],
     products: [],
 
+    addedProducts: [],
+
+    newProductData: {
+      name: '',
+      unitprice: '',
+      description: '',
+      available: true,
+      company: ''
+    },
+
     newOrderModal: false,
     newOrderData: {
       description: '',
-      quantity: '',
-      orderDate: '',
-      user: ''
+      products: [
+        {
+          productId: '',
+          quantity: '',
+          price: ''
+        }
+      ],
+      // user: ''
     },
 
     editOrderModal: false,
@@ -49,7 +64,6 @@ class OrderPage extends React.Component {
       });
 
     this._refreshCompanies();
-
   }
 
   _refreshCompanies() {
@@ -63,10 +77,11 @@ class OrderPage extends React.Component {
   createNewOrder() {
     const newOrder = {
       description: this.state.newOrderData.description,
-      quantity: this.state.newOrderData.quantity,
-      orderDate: this.state.newOrderData.orderDate,
+      // quantity: this.state.newOrderData.quantity,
+      // orderDate: this.state.newOrderData.orderDate,
+      products: this.state.newOrderData.products
     };
-    axios.post('http://localhost:8080/orderAPI/user/orders', newOrder)
+    axios.post('http://localhost:8080/orderAPI/orders', newOrder)
       .then(response => {
         let {orders} = this.state;
         orders.push(response.data);
@@ -77,11 +92,11 @@ class OrderPage extends React.Component {
             description: '',
             quantity: '',
             orderDate: '',
-            user: ''
+            user: '',
+            products: ''
           }
         });
         console.log(response.data.content);
-        this.toggleNewOrderModal();
       });
   }
 
@@ -104,14 +119,13 @@ class OrderPage extends React.Component {
     });
   }
 
-  // TODO: GET FROM ORDERPRODUCT, EDIT THIS
   openProducts(orderId) {
 
     axios.get('http://localhost:8080/orderAPI/orders/' + orderId + '/products')
 
       .then(response => {
         const products = response.data;
-        this.setState({products, openProductsModal: ! this.state.openProductsModal});
+        this.setState({products, openProductsModal: !this.state.openProductsModal});
       });
   }
 
@@ -161,14 +175,13 @@ class OrderPage extends React.Component {
           <td>{order.id}</td>
           <td>{order.description}</td>
           <td>{order.quantity}</td>
-          <td>{order.orderDate}</td>
+          <td>{order.orderDate.split("T")[0]}</td>
           <td>
-            <Button color="primary" size="sm" className="mr-2" onClick={this.openProducts.bind(this)}>
-              Add Product
-            </Button>
+
             <Button color="info" size="sm" className="mr-2" onClick={this.openProducts.bind(this, order.id)}>
               See Products
             </Button>
+
             <Button color="success" size="sm" className="mr-2"
                     onClick={this.editOrder.bind(
                       this, order.id, order.description, order.quantity, order.orderDate)}>Edit</Button>
@@ -181,14 +194,26 @@ class OrderPage extends React.Component {
     let products = this.state.products;
     let productsItems = products.map(product =>
       <tr key={product.name}>
-        <td >{product.name}</td>
+        <td>{product.name}</td>
 
         <td className="mr-4"> {product.description}</td>
 
-        <td className="mr-4"> {product.unitprice}</td>
-
+        <td className="mr-4"> {product.unit_price}</td>
       </tr>
     );
+
+    let total_price = 0;
+    products.map(product =>
+      <tr key={product.name}>
+        <strong> {total_price += product.unit_price} </strong>
+      </tr>
+    );
+
+
+    let optionProducts = products.map((product) =>
+      <option value={product.id}> {product.name} </option>
+    );
+
 
     return (
       <div className="App container">
@@ -209,25 +234,38 @@ class OrderPage extends React.Component {
               }}
               />
             </FormGroup>
-            <FormGroup>
-              <Label for="quantity"> Quantity </Label>
-              <Input id="quantity" value={this.state.newOrderData.quantity} onChange={(e) => {
-                let {newOrderData} = this.state;
-                newOrderData.quantity = e.target.value;
-                this.setState({newOrderData})
-              }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="orderDate"> Date </Label>
-              <Input id="orderDate" value={this.state.newOrderData.orderDate} onChange={(e) => {
-                let {newOrderData} = this.state;
-                newOrderData.orderDate = e.target.value;
-                this.setState({newOrderData})
-              }}
-              />
-            </FormGroup>
 
+            <FormGroup>
+              <Label>Select product for the order </Label>
+              <div>
+                <select onChange={(e) => {
+
+                  let {newOrderData} = this.state;
+
+                  // newOrderData.products.push(productId:e.target.value.toString(),) = e.target.value;
+                  // newOrderData.products.push({productId:"1", quantity:"123", price: "123"});
+
+                  newOrderData.products.map(prod => {
+
+                    prod.productId = e.target.value;
+                    // prod.quantity = e.target.value;
+                    // prod.price = e.target.value;
+
+                  });
+                  // newOrderData.products = e.target.value;
+
+                  this.setState({newOrderData});
+                  console.log(e);
+                }}
+                > {optionProducts}
+
+                </select>
+
+                {/*<Button onClick={this.setState({  })}>Add new Product</Button>*/}
+
+              </div>
+
+            </FormGroup>
 
           </ModalBody>
 
@@ -291,7 +329,7 @@ class OrderPage extends React.Component {
 
         {/* END MODAL EDITING ORDER */}
 
-        <Modal isOpen={this.state.openProductsModal} toggle={this.toggleOpenProductsModal.bind(this)} fade={false} >
+        <Modal isOpen={this.state.openProductsModal} toggle={this.toggleOpenProductsModal.bind(this)} fade={false}>
           <ModalHeader toggle={this.toggleOpenProductsModal.bind(this)}>Products for this order
           </ModalHeader>
 
@@ -305,27 +343,30 @@ class OrderPage extends React.Component {
               </tr>
 
               </thead>
-            <tbody>
+              <tbody>
               {productsItems}
-            </tbody>
+              </tbody>
             </Table>
           </ModalBody>
-
           <ModalFooter>
+            <p>
+              <b> Total price of the products: {total_price} </b>
+            </p>
+            <p></p>
 
             <Button color="secondary" onClick={this.toggleOpenProductsModal.bind(this)}>Cancel</Button>
 
           </ModalFooter>
         </Modal>
 
-        { /* START MODAL FOR LISTING PRODUCTS */}
+        {/* START MODAL FOR LISTING PRODUCTS */}
 
         <Table>
           <thead>
           <tr>
             <th>#</th>
             <th>Description</th>
-            <th>Quantity</th>
+            <th></th>
             <th>Order Date</th>
           </tr>
           </thead>

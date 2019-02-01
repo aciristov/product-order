@@ -9,7 +9,6 @@ import java.util.List;
 
 public class OrderProductServiceImp implements OrderProductService{
 
-    // Dependency Injection of the OrderProductRepository, implements OrderProduct Service
     @Autowired
     private OrderProductRepository orderProductRepository;
 

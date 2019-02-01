@@ -18,16 +18,4 @@ public class CompanyServiceImp implements CompanyService {
         return companyRepository.save(company);
     }
 
-    @Override
-    public List<Company> listAll(){
-        return companyRepository.findAll();
-    }
-
-    //MUST USE .GET(), BECAUSE ID IS DEFINED AS "Optional", IN CASE ID IS MISSING
-    @Override
-    public Company getCompany(Long id) {
-        return companyRepository.findById(id).get();
-
-    }
-
 }

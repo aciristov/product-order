@@ -1,6 +1,5 @@
 package com.myproject.productsorder.domain;
 
-import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.NaturalIdCache;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -8,10 +7,11 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Table(name = "order", schema = "order")
+@Table(name = "order_test")
 @NaturalIdCache
 public class Order {
 
@@ -21,70 +21,39 @@ public class Order {
     private Long id;
 
     @NotNull
-    private Long quantity;
-
-//    @NotNull
-//    @JsonFormat(pattern = "yyyy-MM-dd")
-//    private Date orderDate;
-
-    @NotNull
     @Size(max = 200)
     private String description;
 
-//   OneToMany -> "OrderProductService" , "Order"
-    //@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List <OrderProduct> products = new ArrayList<>();
+    @NotNull
+    @Column(name = "date")
+    private Date orderDate;
 
-    //ManyToOne "User" , "Order"
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch =  FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private User user;
 
-    public Order(){}
-    public Order(Date orderDate, Long quantity, String description){
-//        this.orderDate = orderDate;
-        this.quantity = quantity;
-        this.description = description;
-    }
+    public Order() {}
 
-//    public void addProduct(Product product) {
-//        OrderProduct orderProduct = new OrderProduct(this, product);
-//        products.add(orderProduct);
-//        product.getOrders().add(orderProduct);
-//    }
-//
-//    public void removeProduct(Product product){
-//        for (Iterator<OrderProduct> iterator = products.iterator();
-//             iterator.hasNext();
-//             ){
-//            OrderProduct orderProduct = iterator.next();
-//
-//            if (orderProduct.getOrder().equals(this) && orderProduct.getProduct().equals(product)){
-//                iterator.remove();
-//                orderProduct.getProduct().getOrders().remove(orderProduct);
-//                orderProduct.setOrder(null);
-//                orderProduct.setProduct(null);
-//            }
-//        }
-//    }
+    public Order(String description, @NotNull Date orderDate) {
+        this.description = description;
+        this.orderDate = orderDate;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(description, order.description);
+        return Objects.equals(id, order.id) &&
+            Objects.equals(description, order.description) &&
+            Objects.equals(orderDate, order.orderDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description);
+        return Objects.hash(id, description, orderDate);
     }
-
-    //GETTERS AND SETTERS BELOW
 
     public Long getId() {
         return id;
@@ -94,38 +63,27 @@ public class Order {
         this.id = id;
     }
 
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
-    }
-
-//    public Date getOrderDate() {
-//        return orderDate;
-//    }
-//
-//    public void setOrderDate(Date orderDate) {
-//        this.orderDate = orderDate;
-//    }
-
     public String getDescription() {
         return description;
     }
-
-//    public List<OrderProduct> getProducts() { return products; }
-//
-//    public void setProducts(List<OrderProduct> products) { this.products = products; }
-
-    public User getUser() { return user; }
-
-    public void setUser(User user) { this.user = user; }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public Date getOrderDate() {
+        return orderDate;
+    }
 
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

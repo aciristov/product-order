@@ -2,11 +2,8 @@ import React from 'react';
 import axios from 'axios';
 
 import {Input, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Table, Button} from 'reactstrap';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import {Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap';
 import {Storage} from "react-jhipster";
-import {bool} from "prop-types";
-
-
 
 class ProductPage extends React.Component {
 
@@ -40,17 +37,17 @@ class ProductPage extends React.Component {
 
   };
 
-  componentWillMount(){
+  componentWillMount() {
     const token = Storage.local.get('jhi-authenticationToken') || Storage.session.get('jhi-authenticationToken');
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     axios.get("http://localhost:8080/productAPI/products")
       .then((response) => {
-      this.setState({
-        products: response.data.content
-      })
-    });
+        this.setState({
+          products: response.data.content
+        })
+      });
 
     axios.get("http://localhost:8080/companyAPI/companies")
       .then((response) => {
@@ -59,9 +56,8 @@ class ProductPage extends React.Component {
         })
       });
   }
-/////////////////////////////////// AUTOCOMPLETE METHODS BELOW
 
-  _refreshProducts(){
+  _refreshProducts() {
     axios.get('http://localhost:8080/productAPI/products')
       .then(res => {
         const products = res.data.content;
@@ -69,22 +65,7 @@ class ProductPage extends React.Component {
       });
   }
 
-  handleInputChange = (e) => {
-    console.log("search:", e.target.value);
-   /* this.setState({
-     search:
-    },() => {
-        if (this.state.query && this.state.query.length > 1){
-          if (this.state.query.length % 2 === 0) {
-            this._refreshProducts()
-          }
-        }
-      }
-      )*/
-  };
-
-
-  createNewProduct(){
+  createNewProduct() {
     const newProduct = {
       name: this.state.newProductData.name,
       unitprice: this.state.newProductData.unitprice,
@@ -93,8 +74,8 @@ class ProductPage extends React.Component {
     };
     axios.post('http://localhost:8080/productAPI/companies/' + this.state.newProductData.company + '/products', newProduct)
       .then(response => {
-        let { products } = this.state;
-        console.log("RESPONSE : ", + response);
+        let {products} = this.state;
+        console.log("RESPONSE : ", +response);
         console.log(response.data);
         console.log(response.data.content);
         products.push(response.data);
@@ -102,7 +83,7 @@ class ProductPage extends React.Component {
         this.setState({
           products,
           newProductModal: false,
-          newProductData : {
+          newProductData: {
             name: '',
             unitprice: '',
             description: '',
@@ -115,12 +96,12 @@ class ProductPage extends React.Component {
 
   }
 
-  updateProduct(){
+  updateProduct() {
     let {name, unitprice, description, available} = this.state.editProductData;
-    axios.put(`http://localhost:8080/productAPI/companies/` + this.state.editProductData.company + '/products/' + this.state.editProductData.id , {
+    axios.put(`http://localhost:8080/productAPI/companies/` + this.state.editProductData.company + '/products/' + this.state.editProductData.id, {
       name, unitprice, description, available
     }).then((response) => {
-      let { products } = this.state;
+      let {products} = this.state;
       console.log(response);
       const updatedProduct = response.data;
 
@@ -130,46 +111,44 @@ class ProductPage extends React.Component {
         }
         return updatedProduct;
       });
-      this.setState({ ...this.state,  products: updatedProducts});
+      this.setState({...this.state, products: updatedProducts});
       this.toggleEditProductModal();
     });
   }
 
-  editProduct(id, name, unitprice, description, available){
-    this.setState({ editProductData: {
+  editProduct(id, name, unitprice, description, available) {
+    this.setState({
+      editProductData: {
         id, name, unitprice, description, available
-      }, editProductModal: ! this.state.editProductModal
+      }, editProductModal: !this.state.editProductModal
     });
   }
 
-  // TODO: SEE THIS
-  deleteProduct(id){
-    axios.delete('http://localhost:8080/productAPI/companies/1/products/'+ id).then(response =>{
-      let { products } = this.state;
+  deleteProduct(id) {
+    axios.delete('http://localhost:8080/productAPI/companies/1/products/' + id).then(response => {
+      let {products} = this.state;
 
       const filterProducts = products.filter(product => product.id !== id);
-      this.setState({ ...this.state,  products: filterProducts});
+      this.setState({...this.state, products: filterProducts});
     });
   }
 
-  toggleNewProductModal(){
+  toggleNewProductModal() {
     this.setState({
-      newProductModal: ! this.state.newProductModal
+      newProductModal: !this.state.newProductModal
     });
   }
 
   toggleEditProductModal() {
     this.setState({
-      editProductModal: ! this.state.editProductModal
+      editProductModal: !this.state.editProductModal
     });
   }
-
-  // TODO : AUTOCOMPLETE FOR SEARCHING, SEE ALSO https://alligator.io/react/react-autocomplete/
 
   render() {
 
     let products = this.state.products.map((product) => {
-      return(
+      return (
         <tr key={product.id}>
           <td>{product.id}</td>
           <td>{product.name}</td>
@@ -177,8 +156,9 @@ class ProductPage extends React.Component {
           <td>{product.description}</td>
           <td>{product.available}</td>
           <td>
-            <Button color="success" size="sm" className="mr-2" onClick={this.editProduct.bind(this, product.id, product.name, product.unitprice, product.description, product.available)}>Edit</Button>
-            <Button color="danger" size="sm" onClick={this.deleteProduct.bind(this, product.id)} >Delete</Button>
+            <Button color="success" size="sm" className="mr-2"
+                    onClick={this.editProduct.bind(this, product.id, product.name, product.unitprice, product.description, product.available)}>Edit</Button>
+            <Button color="danger" size="sm" onClick={this.deleteProduct.bind(this, product.id)}>Delete</Button>
           </td>
         </tr>
       )
@@ -195,11 +175,10 @@ class ProductPage extends React.Component {
 
         {/*MODAL FOR POST MODAL, CREATE PRODUCT!!!*/}
 
-        <br/><Button className="my-1" color="primary" onClick={this.toggleNewProductModal.bind(this)}>Add Product</Button><br/><br/>
+        <br/><Button className="my-1" color="primary" onClick={this.toggleNewProductModal.bind(this)}>Add
+        Product</Button><br/><br/>
 
         <form>
-          <input placeholder="Search product" onChange={this.handleInputChange}
-          />
           <p>{this.state.query}</p>
         </form>
 
@@ -208,76 +187,77 @@ class ProductPage extends React.Component {
 
           <ModalBody>
 
-              <FormGroup>
-                <Label for="name"> Name </Label>
-                <Input id="name" value={this.state.newProductData.name} onChange={(e) => {
+            <FormGroup>
+              <Label for="name"> Name </Label>
+              <Input id="name" value={this.state.newProductData.name} onChange={(e) => {
 
-                  let { newProductData } = this.state;
+                let {newProductData} = this.state;
 
-                  newProductData.name = e.target.value;
+                newProductData.name = e.target.value;
 
-                  this.setState( { newProductData });
+                this.setState({newProductData});
 
-                }} />
-              </FormGroup>
+              }}/>
+            </FormGroup>
 
-              <FormGroup>
-                <Label for="unitprice"> Price </Label>
-                <Input id="unitprice" value={this.state.newProductData.unitprice} onChange={(e) => {
+            <FormGroup>
+              <Label for="unitprice"> Price </Label>
+              <Input id="unitprice" value={this.state.newProductData.unitprice} onChange={(e) => {
 
-                  let { newProductData } = this.state;
+                let {newProductData} = this.state;
 
-                  newProductData.unitprice = e.target.value;
+                newProductData.unitprice = e.target.value;
 
-                  this.setState( { newProductData });
+                this.setState({newProductData});
 
-                }} />
-              </FormGroup>
+              }}/>
+            </FormGroup>
 
-              <FormGroup>
-                <Label for="description"> Description </Label>
-                <Input id="description" value={this.state.newProductData.description} onChange={(e) => {
+            <FormGroup>
+              <Label for="description"> Description </Label>
+              <Input id="description" value={this.state.newProductData.description} onChange={(e) => {
 
-                  let { newProductData } = this.state;
+                let {newProductData} = this.state;
 
-                  newProductData.description = e.target.value;
+                newProductData.description = e.target.value;
 
-                  this.setState( { newProductData });
+                this.setState({newProductData});
 
-                }} />
-              </FormGroup>
+              }}/>
+            </FormGroup>
 
-              <FormGroup>
-                <Label for="available"> Check if it's available: </Label> <br />
-                <Input type="checkbox" id="available" value={this.state.newProductData.available} className="pagination" onChange={(e) => {
+            <FormGroup>
+              <Label for="available"> Check if it's available: </Label> <br/>
+              <Input type="checkbox" id="available" value={this.state.newProductData.available} className="pagination"
+                     onChange={(e) => {
 
-                  let { newProductData } = this.state;
+                       let {newProductData} = this.state;
 
-                  newProductData.available = e.target.value;
+                       newProductData.available = e.target.value;
 
-                  this.setState( { newProductData });
+                       this.setState({newProductData});
 
-                }} />
-              </FormGroup>
+                     }}/>
+            </FormGroup>
 
-              <FormGroup>
+            <FormGroup>
 
-                <Label>Select for which company: </Label>
-                <div>
-                      <select onChange={(e) => {
+              <Label>Select for which company: </Label>
+              <div>
+                <select onChange={(e) => {
 
-                        let { newProductData } = this.state;
+                  let {newProductData} = this.state;
 
-                        newProductData.company = e.target.value;
+                  newProductData.company = e.target.value;
 
-                        this.setState( { newProductData });
-                        console.log(e);
-                      }}
-                      > {optionItems} </select>
+                  this.setState({newProductData});
+                  console.log(e);
+                }}
+                > {optionItems} </select>
 
-                </div>
+              </div>
 
-              </FormGroup>
+            </FormGroup>
 
           </ModalBody>
 
@@ -290,7 +270,6 @@ class ProductPage extends React.Component {
 
         {/*END MODAL FOR CREATE!!! */}
 
-
         {/* MODAL FOR EDITING PRODUCT */}
 
         <Modal isOpen={this.state.editProductModal} toggle={this.toggleEditProductModal.bind(this)}>
@@ -302,24 +281,24 @@ class ProductPage extends React.Component {
               <Label for="name"> Name </Label>
               <Input id="name" value={this.state.editProductData.name} onChange={(e) => {
 
-                let { editProductData } = this.state;
+                let {editProductData} = this.state;
 
                 editProductData.name = e.target.value;
 
-                this.setState({ editProductData });
+                this.setState({editProductData});
 
-              }} />
+              }}/>
             </FormGroup>
 
             <FormGroup>
               <Label for="unitprice"> Unitprice </Label>
               <Input id="unitprice" value={this.state.editProductData.unitprice} onChange={(e) => {
 
-                let { editProductData } = this.state;
+                let {editProductData} = this.state;
 
                 editProductData.unitprice = e.target.value;
 
-                this.setState({ editProductData });
+                this.setState({editProductData});
 
               }}
               />
@@ -329,11 +308,11 @@ class ProductPage extends React.Component {
               <Label for="description"> Description </Label>
               <Input id="description" value={this.state.editProductData.description} onChange={(e) => {
 
-                let { editProductData } = this.state;
+                let {editProductData} = this.state;
 
                 editProductData.description = e.target.value;
 
-                this.setState({ editProductData });
+                this.setState({editProductData});
 
               }}
               />
@@ -343,11 +322,11 @@ class ProductPage extends React.Component {
               <Label for="available"> Available </Label>
               <Input id="available" value={this.state.editProductData.available} onChange={(e) => {
 
-                let { editProductData } = this.state;
+                let {editProductData} = this.state;
 
                 editProductData.available = e.target.value;
 
-                this.setState({ editProductData });
+                this.setState({editProductData});
 
               }}
               />
@@ -364,7 +343,6 @@ class ProductPage extends React.Component {
 
         {/* END MODAL FOR EDIT */}
 
-
         <Table>
           <thead>
           <tr>
@@ -372,10 +350,8 @@ class ProductPage extends React.Component {
             <th>Name</th>
             <th>Unit Price</th>
             <th>Description</th>
-            {/*<th>Is available</th>*/}
           </tr>
           </thead>
-
           <tbody>
           {products}
           </tbody>

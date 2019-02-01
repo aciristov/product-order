@@ -1,33 +1,11 @@
 package com.myproject.productsorder.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.Objects;
 
-// BETWEEN ORDER AND PRODUCT
 @Entity
 @Table(name = "order_product")
 public class OrderProduct {
-
-//    @EmbeddedId
-//    private OrderProductId id;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "orderId", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @MapsId("orderId")
-//    private OrderTest order;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "productId", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @MapsId("productId")
-//    private Product product;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +18,8 @@ public class OrderProduct {
     @Column(name = "product_id")
     private long productId;
 
-
     private double quantity;
+
     private double unit_price;
 
     public OrderProduct() {}

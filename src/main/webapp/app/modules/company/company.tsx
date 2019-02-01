@@ -6,29 +6,6 @@ import {Storage} from "react-jhipster";
 
 import { confirmAlert } from 'react-confirm-alert';
 
-
-const options = {
-  title: 'Title',
-  message: 'Message',
-  buttons: [
-    {
-      label: 'Yes',
-      onClick: () => alert('Click Yes')
-    },
-    {
-      label: 'No',
-      onClick: () => alert('Click No')
-    }
-  ],
-
-  childrenElement: () => <div />,
-  customUI: ({ title, message, onClose }) => <div>Custom UI</div>,
-  willUnmount: () => {}
-
-};
-
-confirmAlert(options);
-
 class CompanyPage extends React.Component {
 
   state = {
@@ -151,24 +128,6 @@ class CompanyPage extends React.Component {
 
   }
 
-  // submit = () => {
-  //   confirmAlert({
-  //     title: 'Delete',
-  //     message: 'Are you sure you want to delete',
-  //     buttons: [
-  //       {
-  //         label: 'Yes',
-  //         onClick: () => alert('Click Yes')
-  //       },
-  //       {
-  //         label: 'No',
-  //         onClick: () => alert('Click No')
-  //       }
-  //     ]
-  //   })
-  // };
-
-  //THIS WILL BE RUNNABLE WITH onClick: () =>
   deleteCompany(id){
     axios.delete('http://localhost:8080/companyAPI/companies/'+ id).then(response =>{
       let { companies } = this.state;
@@ -208,17 +167,9 @@ class CompanyPage extends React.Component {
 
           <td>
 
-            <Button color="primary" size="sm" className="mr-2" onClick={ this.toggleDeleteProductsModal.bind(
-              this,
-              // TODO: ALERT
-              // TODO: ORDER PAGE
-              // MODAL CAN'T BE PLACED IN .MAP FUNCTION, WILL RUN FOR EVERY COMPANY!!!!! ONLY WAY FOR NOW, TO USE STATE: COMPANY_ID
-            )} > Alertion </Button>
-
             <Button color="info" size="sm" className="mr-2" onClick={this.listProducts.bind(this, company.id)} >List Products</Button>
             <Button color="success" size="sm" className="mr-2" onClick={this.editCompany.bind(this, company.id, company.name, company.city, company.phone, company.address)} >Edit</Button>
             <Button color="danger" size="sm" onClick={this.deleteCompany.bind(this, company.id)} >Delete</Button>
-
 
           </td>
         </tr>
@@ -228,25 +179,16 @@ class CompanyPage extends React.Component {
     let products = this.state.products;
     let optionItems = products.map((product) =>
       <tr key={product.name}>
-        <hr />
         <td >{product.name}</td>
         <td className="mr-4"> &nbsp;&nbsp;&nbsp; {product.description}</td>
-        <hr />
       </tr>
 
     );
 
-
     return (
-
-      //CONTAINER
-
       <div className="App container">
 
         <h3> <strong> Companies </strong> </h3>
-
-
-
         {/*MODAL FOR POST MODAL, CREATE COMPANY!!!*/}
 
         <br/><Button className="my-1" color="primary" onClick={this.toggleNewCompanyModal.bind(this)}>Add Company</Button><br/><br/>
@@ -323,9 +265,20 @@ class CompanyPage extends React.Component {
 
             <ModalBody>
 
-              <div>
+              <Table>
+                <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                </tr>
+                </thead>
+
+                <tbody>
                 {optionItems}
-              </div>
+
+                </tbody>
+
+              </Table>
 
             </ModalBody>
 
@@ -391,7 +344,6 @@ class CompanyPage extends React.Component {
 
                           }} />
 
-
                         </FormGroup>
 
                       </ModalBody>
@@ -403,15 +355,7 @@ class CompanyPage extends React.Component {
                       </ModalFooter>
                     </Modal>
 
-
   {/*END MODAL FOR EDIT!!!*/}
-
-        { /* START MODAL FOR DELETING */}
-
-
-
-        { /* END MODAL FOR DELETING */}
-
 
         <Table>
           <thead>
@@ -423,16 +367,11 @@ class CompanyPage extends React.Component {
             <th>Address</th>
           </tr>
           </thead>
-
           <tbody>
-
-          {/*MAP ALL THE COMPANIES*/}
           { companies }
-
           </tbody>
 
         </Table>
-
 
       </div>
     );

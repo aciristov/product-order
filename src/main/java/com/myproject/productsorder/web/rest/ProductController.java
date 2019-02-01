@@ -3,7 +3,7 @@ package com.myproject.productsorder.web.rest;
 import com.myproject.productsorder.domain.Product;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.CompanyRepository;
-import com.myproject.productsorder.repository.OrderTestRepository;
+import com.myproject.productsorder.repository.OrderRepository;
 import com.myproject.productsorder.repository.ProductRepository;
 import com.myproject.productsorder.security.AuthoritiesConstants;
 
@@ -17,27 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-/**
- * productAPI as base url,
- * then it comes companies and products for companies
- */
-
 @RestController
 @RequestMapping("/productAPI")
 @Secured(AuthoritiesConstants.USER)
 public class ProductController {
-
-//    @Autowired
-//    private ProductService productService;
 
     @Autowired
     private ProductRepository productRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
-
-    @Autowired
-    private OrderTestRepository orderTestRepository;
 
     @GetMapping("/products")
     public Page<Product> getAllProducts(Pageable pageable) {
@@ -52,19 +41,11 @@ public class ProductController {
         }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not found"));
     }
 
-
     @GetMapping("/companies/{companyId}/products")
     public Page<Product> getAllProductsByCompanyId(@PathVariable (value = "companyId") Long companyId,
                                                    Pageable pageable){
         return productRepository.findByCompanyId(companyId, pageable);
     }
-
-    //test
-//    @GetMapping("/orders/{orderId}/products")
-//    public Page<Product> getAllProductsByOrderId(@PathVariable (value = "orderId") Long orderId,
-//                                                 Pageable pageable){
-//        return productRepository.findByOrderId(orderId, pageable);
-//    }
 
     @GetMapping("/companies/{companyId}/products/{productId}")
     public ResponseEntity<Product> getproductById(@PathVariable Long productId) {
@@ -88,7 +69,6 @@ public class ProductController {
         }).orElseThrow(()-> new ResourceNotFoundException("ProductId " + productId + " not found"));
     }
 
-
     @DeleteMapping("/companies/{companyId}/products/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long companyId,
                                            @PathVariable Long productId) {
@@ -102,6 +82,5 @@ public class ProductController {
         }).orElseThrow(()-> new ResourceNotFoundException("ProductId " + productId + " not found"));
 
     }
-
 
 }

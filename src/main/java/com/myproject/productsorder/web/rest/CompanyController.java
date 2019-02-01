@@ -4,20 +4,13 @@ import com.myproject.productsorder.domain.Company;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
 import com.myproject.productsorder.repository.CompanyRepository;
 import com.myproject.productsorder.security.AuthoritiesConstants;
-import com.myproject.productsorder.service.CompanyService;
-import com.netflix.discovery.converters.Auto;
-import org.hibernate.annotations.GeneratorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,12 +18,8 @@ import java.util.Optional;
 @Secured(AuthoritiesConstants.USER)
 public class CompanyController {
 
-//    @Autowired
-//    public CompanyService companyService;
-
     @Autowired
     public CompanyRepository companyRepository;
-
 
     @PostMapping("/companies")
     public Company createCompany(@Valid @RequestBody Company company) {
@@ -38,19 +27,16 @@ public class CompanyController {
         return newCompany;
     }
 
-
     @GetMapping("/companies")
     public Page<Company> getAllCompanies(Pageable pageable) {
         return companyRepository.findAll(pageable);
     }
-
 
     @GetMapping(value = "/companies/{id}")
     public ResponseEntity<Company> getcompanyById(@PathVariable Long id) {
         Company company = companyRepository.findById(id).get();
         return ResponseEntity.ok().body(company);
     }
-
 
     @PutMapping("/companies/{id}")
     public ResponseEntity<Object> updateCompany(@RequestBody Company company, @PathVariable long id) {
@@ -63,7 +49,6 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
 
-
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<?> deleteCompany(@PathVariable(name = "id") Long companyId) {
         return companyRepository.findById(companyId).map(company -> {
@@ -71,6 +56,5 @@ public class CompanyController {
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("CompanyId " + companyId + " not found"));
     }
-
 
 }

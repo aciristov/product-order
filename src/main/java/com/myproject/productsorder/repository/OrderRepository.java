@@ -9,16 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
-    Page<Order> findByUserId(Long userId, Pageable pageable);
-
     Order save(Order order);
+    Page<Order> findByUserId(Long userId, Pageable pageable);
     List<Order> findAll();
-
-    // optional in case can't find the ID
     Optional<Order> findById(Long id);
-
 }

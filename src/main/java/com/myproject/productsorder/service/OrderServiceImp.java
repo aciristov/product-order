@@ -1,7 +1,10 @@
 package com.myproject.productsorder.service;
 
 import com.myproject.productsorder.domain.*;
-import com.myproject.productsorder.repository.*;
+import com.myproject.productsorder.repository.OrderProductRepository;
+import com.myproject.productsorder.repository.OrderRepository;
+import com.myproject.productsorder.repository.ProductRepository;
+import com.myproject.productsorder.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +18,10 @@ import java.util.Optional;
 public class OrderServiceImp implements OrderService {
 
     @Autowired
-    public OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    public OrderTestRepository orderTestRepository;
+    public OrderProductRepository orderProductRepository;
 
     @Autowired
     public ProductRepository productRepository;
@@ -26,22 +29,9 @@ public class OrderServiceImp implements OrderService {
     @Autowired
     public UserRepository userRepository;
 
-    @Autowired
-    public OrderProductRepository orderProductRepository;
-
     @Override
-    public Order save(Order order) {
+    public Order save(Order order){
         return orderRepository.save(order);
-    }
-
-    @Override
-    public List<Order> listAll() {
-        return orderRepository.findAll();
-    }
-
-    @Override
-    public OrderTest getOrder(Long id) {
-        return orderTestRepository.findById(id).get();
     }
 
     @Transactional
@@ -51,8 +41,32 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public void delete(Order o){
-        orderRepository.delete(o);
+    public void delete(Order order){
+        orderRepository.delete(order);
+    }
+
+    @Override
+    public Order saveOrder(OrderPojo orderPojo, Long userId) {
+
+        User user = userRepository.findById(userId).get();
+        Order order = new Order();
+        order.setDescription(orderPojo.getDescription());
+        order.setOrderDate(new Date());
+        order.setUser(user);
+        order = orderRepository.save(order);
+
+        for (OrderProdPojo p : orderPojo.getProducts()){
+            OrderProduct o = new OrderProduct();
+            o.setOrderId(order.getId());
+            o.setProductId(p.getProductId());
+            o.setQuantity(p.getQuantity());
+            o.setUnit_price(p.getPrice());//
+//              o.setQuantity(Double.parseDouble(getQuantityByProductId(String.valueOf(o.getProductId()))));
+//            o.setUnit_price(Double.parseDouble(getPriceByProductId(String.valueOf(o.getProductId()))));
+
+            orderProductRepository.save(o);
+        }
+        return order;
     }
 
     @Override
@@ -75,23 +89,5 @@ public class OrderServiceImp implements OrderService {
         return orderProductPojos;
     }
 
-    @Override
-    public OrderTest saveOrder(OrderPojo orderPojo, Long userId) {
-        User user = userRepository.findById(userId).get();
-        OrderTest order = new OrderTest();
-        order.setDescription(orderPojo.getDescription());
-        order.setOrderDate(new Date());
-        order.setUser(user);
-        order = orderTestRepository.save(order);
 
-        for (OrderProdPojo p : orderPojo.getProducts()){
-            OrderProduct o = new OrderProduct();
-            o.setOrderId(order.getId());
-            o.setProductId(p.getProductId());
-            o.setQuantity(p.getQuantity());
-            o.setUnit_price(p.getPrice());
-            orderProductRepository.save(o);
-        }
-        return order;
-    }
 }

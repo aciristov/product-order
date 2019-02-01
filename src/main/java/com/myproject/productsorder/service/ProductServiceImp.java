@@ -13,26 +13,12 @@ import java.util.List;
 @Service
 public class ProductServiceImp implements ProductService {
 
-    // Dependency Injection of the ProductRepository, implements Product Service
     @Autowired
     private ProductRepository productRepository;
-
-//    @Autowired
-//    private SessionFactory sessionFactory;
 
     @Override
     public Product save(Product product){
         return productRepository.save(product);
-    }
-
-    @Override
-    public List<Product> listAll() {
-        return productRepository.findAll();
-    }
-
-    @Override
-    public Product getProduct(Long id) {
-        return productRepository.findById(id).get();
     }
 
     @Transactional

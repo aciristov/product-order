@@ -32,21 +32,13 @@ public class Product {
     @NotNull
     private boolean available;
 
-
-//    OneToMany, "Product" AND "OrderProductService"
-  //  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-   // private List<OrderProduct> orders = new ArrayList<>();
-
-    //ManyToOne, "Product" AND "Company"
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Company company;
 
-
     public Product(){}
 
-    //CONSTRUCTOR WITH ARGUMENTS
     public Product(String name, double unitprice, String description, boolean available){
         this.name = name;
         this.unitprice = unitprice;
@@ -115,7 +107,4 @@ public class Product {
 
     public void setAvailable(boolean available) { this.available = available; }
 
-   // public List<OrderProduct> getOrders() { return orders; }
-
-    //public void setOrders(List<OrderProduct> orders) { this.orders = orders; }
 }

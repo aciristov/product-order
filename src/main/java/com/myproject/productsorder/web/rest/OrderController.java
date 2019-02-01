@@ -2,7 +2,7 @@ package com.myproject.productsorder.web.rest;
 
 import com.myproject.productsorder.domain.*;
 import com.myproject.productsorder.exception.ResourceNotFoundException;
-import com.myproject.productsorder.repository.OrderTestRepository;
+import com.myproject.productsorder.repository.OrderRepository;
 import com.myproject.productsorder.repository.UserRepository;
 import com.myproject.productsorder.security.AuthoritiesConstants;
 import com.myproject.productsorder.service.OrderService;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.Request;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,73 +22,54 @@ import java.util.List;
 @Secured(AuthoritiesConstants.USER)
 public class OrderController {
 
+
     @Autowired
     private OrderService orderService;
+
     @Autowired
-    private OrderTestRepository orderTestRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    /*
-    * Just for testing purposes
-    * Every user post his own order -> next post method
-     */
     @Autowired
     private UserService userService;
 
-//    /*
-//    * Post order for authorized user
-//     */
-//    @PostMapping("/user/orders")
-//    public OrderTest createUserOrderTest(Long userId, @Valid @RequestBody OrderTest orderTest){
-//        userId = userService.getUserWithAuthorities().get().getId();
-//        return userRepository.findById(userId).map(user -> {
-//            orderTest.setUser(user);
-//            return orderTestRepository.save(orderTest);
-//        }).orElseThrow(() -> new ResourceNotFoundException("User does not exist!"));
-//    }
-
-
-    /*
-     * Get orders for authorized user
-     */
     @GetMapping("/user/orders")
-    public Page<OrderTest> getAllOrdersByUserIdTest(Pageable pageable){
+    public Page<Order> getAllOrdersByUserIdTest(Pageable pageable){
         Long userId = userService.getUserWithAuthorities().get().getId();
-        return orderTestRepository.findByUserId(userId , pageable);
+        return orderRepository.findByUserId(userId , pageable);
     }
 
     @GetMapping("/users/{userId}/orders/{orderId}")
-    public ResponseEntity<OrderTest> getordertestById1(@PathVariable Long orderId){
-        OrderTest orderTest = orderTestRepository.findById(orderId).get();
-        return ResponseEntity.ok().body(orderTest);
+    public ResponseEntity<Order> getordertestById1(@PathVariable Long orderId){
+        Order order = orderRepository.findById(orderId).get();
+        return ResponseEntity.ok().body(order);
     }
 
     @PostMapping("/orders")
-    public OrderTest createOrder(@Valid @RequestBody OrderPojo orderPojo){
+    public Order createOrder(@Valid @RequestBody OrderPojo orderPojo){
         Long userId = userService.getUserWithAuthorities().get().getId();
         return orderService.saveOrder(orderPojo, userId);
     }
 
-
-    //test GET PRODUCTS FOR ORDER_ID
+    //test GET PRODUCTS FOR ORDER_ID -->
     @GetMapping("/orders/{orderId}/products")
-    public List<OrderProductPojo> getordertestById(@PathVariable (value = "orderId") Long orderId){
+    public List<OrderProductPojo> getorderById(@PathVariable (value = "orderId") Long orderId){
         return orderService.getProducts(orderId);
     }
 
     @PutMapping("/user/orders/{orderId}")
-    public OrderTest updateOrderTest(@PathVariable Long orderId,
-                                     @Valid @RequestBody OrderTest orderTestRequest){
+    public Order updateOrder(@PathVariable Long orderId,
+                                 @Valid @RequestBody Order orderRequest){
         Long userId = userService.getUserWithAuthorities().get().getId();
         if (!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
-        return orderTestRepository.findById(orderId).map(orderTest -> {
-            orderTest.setDescription(orderTestRequest.getDescription());
-            orderTest.setOrderDate(orderTestRequest.getOrderDate());
-            return orderTestRepository.save(orderTest);
+        return orderRepository.findById(orderId).map(order -> {
+            order.setDescription(orderRequest.getDescription());
+            order.setOrderDate(orderRequest.getOrderDate());
+            return orderRepository.save(order);
         }).orElseThrow(()-> new ResourceNotFoundException("OrderTestId " + orderId + " not found"));
     }
 
@@ -100,8 +80,8 @@ public class OrderController {
         if(!userRepository.existsById(userId)){
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
-        return orderTestRepository.findById(orderId).map(orderTest -> {
-            orderTestRepository.delete(orderTest);
+        return orderRepository.findById(orderId).map(orderTest -> {
+            orderRepository.delete(orderTest);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("OrderId " + orderId + " not found"));
 

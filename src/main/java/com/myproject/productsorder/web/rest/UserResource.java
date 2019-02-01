@@ -161,7 +161,7 @@ public class UserResource {
 
     /**
      * For taking "order" or "orders" for user_Id,
-     * GET method in OrderTest controller.
+     * GET method in Order controller.
      */
 //    @GetMapping("/users/{userId}/orders/{orderId}")
 //    ...

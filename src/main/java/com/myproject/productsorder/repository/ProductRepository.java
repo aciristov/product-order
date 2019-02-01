@@ -14,10 +14,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long>{
 
     Page<Product> findByCompanyId(Long companyId, Pageable pageable);
-//    Page<Product> findByOrderId(Long orderId, Pageable pageable);
-//    Product save(Product product);
     List<Product> findAll();
     Optional<Product> findById(Long id);
-//    void update(Long id, Product product);
 
 }
